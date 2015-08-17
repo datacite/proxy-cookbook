@@ -27,7 +27,8 @@ file "#{node['nginx']['dir']}/sites-enabled/default" do
 end
 
 # set up reverse proxy for each application server
-node['nginx']['applications'].each do |application|
+# first application server is default server
+node['nginx']['applications'].each_with_index do |application, index|
   template "#{node['nginx']['dir']}/sites-enabled/#{application}.conf" do
     source "app.conf.erb"
     owner 'root'
@@ -35,6 +36,7 @@ node['nginx']['applications'].each do |application|
     mode '0644'
     variables(
       application: application,
+      default_server: index == 0,
       subdomain: node['nginx']['subdomain']
     )
     notifies :reload, 'service[nginx]'
