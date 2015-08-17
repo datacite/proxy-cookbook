@@ -20,6 +20,13 @@ template 'nginx.conf' do
   notifies :reload, 'service[nginx]'
 end
 
+# delete default configuration file
+file "#{node['nginx']['dir']}/sites-enabled/default" do
+  action :delete
+  notifies :reload, 'service[nginx]'
+end
+
+# set up reverse proxy for each application server
 node['nginx']['applications'].each do |application|
   template "#{application}.conf" do
     source "app.conf.erb"
@@ -28,6 +35,7 @@ node['nginx']['applications'].each do |application|
     mode '0644'
     variables(
       application: application,
+
     )
     notifies :reload, 'service[nginx]'
   end
