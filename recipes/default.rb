@@ -28,7 +28,7 @@ end
 
 # set up reverse proxy for each application server
 node['nginx']['applications'].each do |application|
-  template "#{application}.conf" do
+  template "#{node['nginx']['dir']}/sites-enabled/#{application}.conf" do
     source "app.conf.erb"
     owner 'root'
     group 'root'
