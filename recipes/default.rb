@@ -35,7 +35,7 @@ node['nginx']['applications'].each do |application|
     mode '0644'
     variables(
       application: application,
-
+      subdomain: node['nginx']['subdomain']
     )
     notifies :reload, 'service[nginx]'
   end
