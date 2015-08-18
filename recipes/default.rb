@@ -34,6 +34,12 @@ file "#{node['nginx']['dir']}/sites-enabled/default" do
 end
 
 # enable CORS
+directory "#{node['nginx']['dir']}/include.d" do
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
 template 'cors.conf' do
   path   "#{node['nginx']['dir']}/include.d/cors.conf"
   source 'cors.conf'
