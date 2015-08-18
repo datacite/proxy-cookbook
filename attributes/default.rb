@@ -1,5 +1,5 @@
 # enable local networking in development
-default['apt']['packages'] += %w{ avahi-daemon libnss-mdns } if ENV['VAGRANT']
+default['apt']['packages'] = %w{ avahi-daemon libnss-mdns } if ENV['VAGRANT']
 
 default['nginx']['user'] = 'www-data'
 default['nginx']['dir'] = '/etc/nginx'
