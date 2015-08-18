@@ -1,4 +1,11 @@
-include_recipe 'apt'
+# load .env configuration file with ENV variables
+dotenv node["application"] do
+  dotenv          node['dotenv']
+  action          :nothing
+end.run_action(:load)
+
+# install and configure dependencies
+include_recipe "apt"
 
 execute "apt-get update" do
   action :nothing
@@ -46,16 +53,16 @@ template 'logging.conf' do
   notifies :reload, 'service[nginx]'
 end
 
-# set up reverse proxy for each application server
-# first application server is default server
-node['nginx']['applications'].each_with_index do |application, index|
-  template "#{node['nginx']['dir']}/sites-enabled/#{application}.conf" do
-    source "app.conf.erb"
+# set up reverse proxy for each server
+# first server is default server
+node['nginx']['servers'].each_with_index do |server, index|
+  template "#{node['nginx']['dir']}/sites-enabled/#{server}.conf" do
+    source "server.conf.erb"
     owner 'root'
     group 'root'
     mode '0644'
     variables(
-      application: application,
+      server: server,
       default_server: index == 0,
       subdomain: node['nginx']['subdomain']
     )
