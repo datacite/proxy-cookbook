@@ -11,13 +11,6 @@ execute "apt-get update" do
   action :nothing
 end
 
-# install packages
-Array(node['apt']['packages']).each do |pkg|
-  package pkg do
-    action :install
-  end
-end
-
 # install nginx
 package 'nginx-full' do
   options "-y --force-yes"
@@ -67,18 +60,19 @@ template 'logging.conf' do
 end
 
 # set up reverse proxy for each server
-# first server is default server
-servers = ENV['SERVERS'].to_s.split(',')
-servers.each_with_index do |server, index|
-  template "#{node['nginx']['dir']}/sites-enabled/#{server}.conf" do
+servers = {
+  'search' => ENV['SEARCH']
+}
+servers.each do |name, ip|
+  template "#{node['nginx']['dir']}/sites-enabled/#{name}.conf" do
     source "server.conf.erb"
     owner 'root'
     group 'root'
     mode '0644'
     variables(
-      server: server,
-      default_server: index == 0,
-      subdomain: node['nginx']['subdomain']
+      server: name,
+      default_server: name == 'search',
+      ip: ip
     )
     notifies :reload, 'service[nginx]'
   end

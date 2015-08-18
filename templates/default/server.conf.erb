@@ -4,7 +4,7 @@ server {
     listen 80 <%= @default_server ? "default_server" : "" %>;
 
     location / {
-        proxy_pass http://<%= "#{@server}.#{@subdomain}.#{node['domain']}" %>;
+        proxy_pass http://<%= @ip %>;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
