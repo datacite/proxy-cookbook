@@ -11,6 +11,13 @@ execute "apt-get update" do
   action :nothing
 end
 
+# install packages, including nginx
+node['apt']['packages'].each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
 # install nginx
 package 'nginx-full' do
   options "-y --force-yes"
