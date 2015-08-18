@@ -61,7 +61,8 @@ end
 
 # set up reverse proxy for each server
 # first server is default server
-node['nginx']['servers'].each_with_index do |server, index|
+servers = Array(ENV['SERVERS']).split(',')
+servers.each_with_index do |server, index|
   template "#{node['nginx']['dir']}/sites-enabled/#{server}.conf" do
     source "server.conf.erb"
     owner 'root'

@@ -5,4 +5,3 @@ default['nginx']['worker_processes'] = 4
 default['nginx']['worker_connections'] = 768
 
 default['nginx']['subdomain'] = 'ec2'
-default['nginx']['servers'] = (ENV['SERVERS'] || 'www').split(',')
