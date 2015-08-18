@@ -60,9 +60,11 @@ template 'logging.conf' do
 end
 
 # set up reverse proxy for each server
+# ignore missing ENV variables
 servers = {
   'search' => ENV['SEARCH']
-}
+}.select { |_, value| !value.nil? }
+
 servers.each do |name, ip|
   template "#{node['nginx']['dir']}/sites-enabled/#{name}.conf" do
     source "server.conf.erb"
