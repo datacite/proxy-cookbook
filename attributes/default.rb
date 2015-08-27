@@ -6,5 +6,6 @@ default['nginx']['worker_connections'] = 768
 
 default['nginx']['subdomain'] = 'ec2'
 
+default['full_domain'] = 'local'
 default['servers'] = { "search" => "127.0.0.1",
                        "status" => "127.0.0.1" }

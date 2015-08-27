@@ -1,5 +1,5 @@
 server {
-    server_name <%= "#{@server}.#{node['domain']}" %>;
+    server_name <%= "#{@server}.#{node['full_domain']}" %>;
 
     listen 80 <%= @default_server ? "default_server" : "" %>;
 
