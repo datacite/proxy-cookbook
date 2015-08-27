@@ -44,16 +44,15 @@ template 'cors.conf' do
 end
 
 # set up reverse proxy for each server
-node['servers'].each do |name, ip|
+node['servers'].each do |name|
   template "#{node['nginx']['dir']}/sites-enabled/#{name}.conf" do
     source "server.conf.erb"
     owner 'root'
     group 'root'
     mode '0644'
     variables(
-      server: name,
-      default_server: name == 'search',
-      ip: ip
+      name: name,
+      default_server: name == 'search'
     )
     notifies :reload, 'service[nginx]'
   end
