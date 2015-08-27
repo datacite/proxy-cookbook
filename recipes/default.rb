@@ -1,9 +1,3 @@
-# load .env configuration file with ENV variables
-dotenv node["application"] do
-  dotenv          node['dotenv']
-  action          :nothing
-end.run_action(:load)
-
 # install and configure dependencies
 include_recipe "apt"
 
@@ -50,13 +44,7 @@ template 'cors.conf' do
 end
 
 # set up reverse proxy for each server
-# ignore missing ENV variables
-servers = {
-  'search' => ENV['SEARCH'],
-  'status' => ENV['STATUS']
-}.select { |_, value| !value.nil? }
-
-servers.each do |name, ip|
+node['servers'].each do |name, ip|
   template "#{node['nginx']['dir']}/sites-enabled/#{name}.conf" do
     source "server.conf.erb"
     owner 'root'
