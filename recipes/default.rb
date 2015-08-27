@@ -49,16 +49,6 @@ template 'cors.conf' do
   notifies :reload, 'service[nginx]'
 end
 
-# configure logging
-template 'logging.conf' do
-  path   "#{node['nginx']['dir']}/conf.d/logging.conf"
-  source 'logging.conf'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  notifies :reload, 'service[nginx]'
-end
-
 # set up reverse proxy for each server
 # ignore missing ENV variables
 servers = {
