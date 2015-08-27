@@ -62,7 +62,8 @@ end
 # set up reverse proxy for each server
 # ignore missing ENV variables
 servers = {
-  'search' => ENV['SEARCH']
+  'search' => ENV['SEARCH'],
+  'status' => ENV['STATUS']
 }.select { |_, value| !value.nil? }
 
 servers.each do |name, ip|
