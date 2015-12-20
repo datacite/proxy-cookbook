@@ -79,8 +79,9 @@ end
 node['proxy']['servers'].each do |name|
   hostname = name.split(".").first
   domain = name.split(".").slice(1..-1).join(".")
-  if node['proxy']['certificates'].include? domain
-    cert = ssl_certificate domain
+  cert = ssl_certificate domain
+
+  if cert
     ssl_key = cert.key_path
     ssl_cert = cert.chain_combined_path
   else
