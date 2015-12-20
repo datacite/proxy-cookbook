@@ -20,7 +20,7 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
 end
 
 # set up reverse proxy for each server
-node['servers'].each do |name|
+node['proxy']['servers'].each do |name|
   template "#{node['nginx']['dir']}/sites-enabled/#{name}.conf" do
     source "server.conf.erb"
     owner 'root'
