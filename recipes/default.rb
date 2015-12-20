@@ -27,7 +27,7 @@ directory "#{node['nginx']['dir']}/ssl" do
 end
 
 remote_file "Copy intermediate certificate" do
-  path "#{node['nginx']['dir']}/ssl/#{node['proxy']['intermediate_certificate']}"
+  path "/etc/ssl/certs/#{node['proxy']['intermediate_certificate']}"
   source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['intermediate_certificate']}"
   owner 'root'
   group 'root'
