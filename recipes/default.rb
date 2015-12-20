@@ -72,7 +72,7 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   cookbook 'proxy'
   variables(
     fqdn: "#{node['application']}.#{node['proxy']['ext_domain']}",
-    ssl_key: cert.key_path
+    ssl_key: cert.key_path,
     ssl_cert: cert.chain_combined_path
   )
   notifies :reload, 'service[nginx]'
