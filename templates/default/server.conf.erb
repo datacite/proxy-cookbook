@@ -1,15 +1,17 @@
 server {
     server_name <%= "#{@fqdn}" %>;
 
+    <% if @ssl_cert %>
     ssl_certificate <%= "#{@ssl_cert}" %>;
     ssl_certificate_key <%= "#{@ssl_key}" %>;
-
+    <% end %>
     resolver <%= "#{node['proxy']['resolver']}" %>;
     set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
 
     listen 80;
+    <% if @ssl_cert %>
     listen 443 ssl;
-
+    <% end %>
     location / {
         proxy_pass $backend;
         proxy_set_header Host $host;

@@ -56,8 +56,8 @@ node['proxy']['certificates'].each do |name|
     source 'file'
     chain_source 'file'
     chain_name node['proxy']['intermediate_certificate']
-    key_path "/etc/ssl/certs/#{name}.key"
-    cert_path "/etc/ssl/private/#{name}.crt"
+    key_path "/etc/ssl/private/#{name}.key"
+    cert_path "/etc/ssl/certs/#{name}.crt"
   end
 end
 
