@@ -1,45 +1,21 @@
-# install and configure dependencies
-include_recipe "apt"
-
-execute "apt-get update" do
-  action :nothing
+# install nginx and create configuration file and application root
+passenger_nginx node["application"] do
+  user            ENV['DEPLOY_USER']
+  group           ENV['DEPLOY_GROUP']
+  action          :config
 end
 
-# install nginx
-package 'nginx-full' do
-  options "-y --force-yes"
-  action :install
-end
-
-# nginx configuration
-template 'nginx.conf' do
-  path   "#{node['nginx']['dir']}/nginx.conf"
-  source 'nginx.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  notifies :reload, 'service[nginx]'
-end
-
-# delete default configuration file
-file "#{node['nginx']['dir']}/sites-enabled/default" do
-  action :delete
-  notifies :reload, 'service[nginx]'
-end
-
-# enable CORS
-directory "#{node['nginx']['dir']}/include.d" do
+# setup endpoint for health checks
+template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
+  source "proxy.conf.erb"
   owner 'root'
   group 'root'
-  mode '0755'
-end
-
-template 'cors.conf' do
-  path   "#{node['nginx']['dir']}/include.d/cors.conf"
-  source 'cors.conf'
-  owner  'root'
-  group  'root'
-  mode   '0644'
+  mode '0644'
+  cookbook 'proxy'
+  variables(
+    fqdn: "#{node['application']}.#{node['proxy']['ext_domain']}",
+    domain: node['proxy']['ext_domain'].split(".").slice(0..-2).join(".")
+  )
   notifies :reload, 'service[nginx]'
 end
 
@@ -50,12 +26,22 @@ node['servers'].each do |name|
     owner 'root'
     group 'root'
     mode '0644'
+    cookbook 'proxy'
     variables(
-      name: name,
-      default_server: name == 'search'
+      fqdn: name,
+      hostname: name.split(".").first,
+      domain: name.split(".").slice(1..-2).join(".")
     )
     notifies :reload, 'service[nginx]'
   end
+end
+
+# create required files and folders, and deploy application
+capistrano node["application"] do
+  user            ENV['DEPLOY_USER']
+  group           ENV['DEPLOY_GROUP']
+  rails_env       ENV['RAILS_ENV']
+  action          [:consul_install, :rsyslog_config, :restart]
 end
 
 service 'nginx' do

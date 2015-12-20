@@ -1,12 +1,24 @@
 server {
-    server_name <%= "#{@name}.#{node['ext_domain']}" %>;
+    server_name <%= "#{@fqdn}" %>;
 
-    listen 80 <%= @default_server ? "default_server" : "" %>;
+    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256$
+    ssl_prefer_server_ciphers on;
+    ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+    ssl_certificate /etc/nginx/ssl/<%= "#{@domain}" %>.crt;
+    ssl_certificate_key /etc/nginx/ssl/<%= "#{@domain}" %>.key;
+    ssl_dhparam /etc/nginx/ssl/dhparams.pem;
+
+    resolver <%= "#{node['proxy']['resolver']}" %>;
+    set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
+
+    listen 80;
+    listen 443 ssl;
 
     location / {
-        proxy_pass http://<%= "#{@name}.#{node['int_domain']}" %>;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-FORWARDED-PROTO $scheme;
     }
 }
