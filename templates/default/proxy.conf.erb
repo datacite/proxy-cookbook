@@ -14,5 +14,6 @@ server {
     location = /status {
         alias <%= "/var/www/#{node['application']}/public" %>/status/index.html;
         autoindex off;
+        default_type text/html;
     }
 }
