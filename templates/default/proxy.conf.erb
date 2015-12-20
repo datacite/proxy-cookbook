@@ -16,6 +16,7 @@ server {
     rewrite ^(.+)/+$ $1 permanent;
 
     location = /status {
-        index index.html
+        alias <%= "/var/www/#{node['application']}/public" %>/status/index.html;
+        autoindex off;
     }
 }
