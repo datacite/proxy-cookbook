@@ -11,5 +11,7 @@ server {
     listen 80 default_server;
     listen 443 ssl default_server;
 
+    root <%= "/var/www/#{node['application']}/public" %>;
+
     location = /index.html {}
 }

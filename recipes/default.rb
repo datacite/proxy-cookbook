@@ -41,7 +41,7 @@ capistrano node["application"] do
   user            ENV['DEPLOY_USER']
   group           ENV['DEPLOY_GROUP']
   rails_env       ENV['RAILS_ENV']
-  action          [:consul_install, :rsyslog_config, :restart]
+  action          [:config, :consul_install, :rsyslog_config, :restart]
 end
 
 service 'nginx' do
