@@ -79,7 +79,14 @@ end
 node['proxy']['servers'].each do |name|
   hostname = name.split(".").first
   domain = name.split(".").slice(1..-1).join(".")
-  cert = ssl_certificate domain
+  if node['proxy']['certificates'].include? domain
+    cert = ssl_certificate domain
+    ssl_key = cert.key_path
+    ssl_cert = cert.chain_combined_path
+  else
+    ssl_key = nil
+    ssl_cert = nil
+  end
 
   template "#{node['nginx']['dir']}/sites-enabled/#{hostname}.conf" do
     source "server.conf.erb"
@@ -90,8 +97,8 @@ node['proxy']['servers'].each do |name|
     variables(
       fqdn: name,
       hostname: hostname,
-      ssl_key: cert.key_path,
-      ssl_cert: cert.chain_combined_path
+      ssl_key: ssl_key,
+      ssl_cert: ssl_cert
     )
     notifies :reload, 'service[nginx]'
   end
