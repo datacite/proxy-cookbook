@@ -4,6 +4,10 @@ server {
     <% if @ssl_cert %>
     ssl_certificate <%= "#{@ssl_cert}" %>;
     ssl_certificate_key <%= "#{@ssl_key}" %>;
+
+    ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+    ssl_prefer_server_ciphers on;
+    ssl_dhparam /etc/nginx/ssl/dhparams.pem;
     <% end %>
     resolver <%= "#{node['proxy']['resolver']}" %>;
     set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;

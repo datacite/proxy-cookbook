@@ -51,15 +51,15 @@ openssl_dhparam '/etc/nginx/ssl/dhparam.pem' do
   key_length 2048
 end
 
-template 'ssl.conf' do
-  path   "#{node['nginx']['dir']}/include.d/ssl.conf"
-  source 'ssl.conf'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  cookbook 'proxy'
-  notifies :reload, 'service[nginx]'
-end
+# template 'ssl.conf' do
+#   path   "#{node['nginx']['dir']}/include.d/ssl.conf"
+#   source 'ssl.conf'
+#   owner  'root'
+#   group  'root'
+#   mode   '0644'
+#   cookbook 'proxy'
+#   notifies :reload, 'service[nginx]'
+# end
 
 # setup endpoint for health checks
 if ::File.exist?("/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt")
