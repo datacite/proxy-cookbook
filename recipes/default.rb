@@ -36,7 +36,7 @@ end
 
 node['proxy']['certificates'].each do |name|
   remote_file "Copy #{name} certificate" do
-    path "#{node['nginx']['dir']}/ssl/#{name}.crt"
+    path "/etc/ssl/certs/#{name}.crt"
     source "file:///var/www/#{node['application']}/ssl/#{name}.crt"
     owner 'root'
     group 'root'
@@ -44,7 +44,7 @@ node['proxy']['certificates'].each do |name|
   end
 
   remote_file "Copy #{name} key" do
-    path "#{node['nginx']['dir']}/ssl/#{name}.key"
+    path "/etc/ssl/private/#{name}.key"
     source "file:///var/www/#{node['application']}/ssl/#{name}.key"
     owner 'root'
     group 'root'
@@ -56,8 +56,8 @@ node['proxy']['certificates'].each do |name|
     source 'file'
     chain_source 'file'
     chain_name node['proxy']['intermediate_certificate']
-    key_path "#{node['nginx']['dir']}/ssl/#{name}.key"
-    cert_path "#{node['nginx']['dir']}/ssl/#{name}.crt"
+    key_path "/etc/ssl/certs/#{name}.key"
+    cert_path "/etc/ssl/private/#{name}.crt"
   end
 end
 
