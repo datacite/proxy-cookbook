@@ -13,5 +13,8 @@ server {
 
     root <%= "/var/www/#{node['application']}/public/status" %>;
 
+    rewrite ^(.+)/+$ $1 permanent;
+    rewrite ^(.+)/index.html$ $1 permanent;
+
     location = /index.html {}
 }
