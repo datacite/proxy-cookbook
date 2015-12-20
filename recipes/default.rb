@@ -5,20 +5,6 @@ passenger_nginx node["application"] do
   action          :config
 end
 
-# setup endpoint for health checks
-template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
-  source "proxy.conf.erb"
-  owner 'root'
-  group 'root'
-  mode '0644'
-  cookbook 'proxy'
-  variables(
-    fqdn: "#{node['application']}.#{node['proxy']['ext_domain']}",
-    domain: node['proxy']['ext_domain'].split(".").slice(0..-2).join(".")
-  )
-  notifies :reload, 'service[nginx]'
-end
-
 # configure SSL
 directory "#{node['nginx']['dir']}/ssl" do
   owner 'root'
@@ -72,6 +58,23 @@ template 'ssl.conf' do
   group  'root'
   mode   '0644'
   cookbook 'proxy'
+  notifies :reload, 'service[nginx]'
+end
+
+# setup endpoint for health checks
+cert = ssl_certificate node['proxy']['ext_domain']
+
+template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
+  source "proxy.conf.erb"
+  owner 'root'
+  group 'root'
+  mode '0644'
+  cookbook 'proxy'
+  variables(
+    fqdn: "#{node['application']}.#{node['proxy']['ext_domain']}",
+    ssl_key: cert.key_path
+    ssl_cert: cert.chain_combined_path
+  )
   notifies :reload, 'service[nginx]'
 end
 
