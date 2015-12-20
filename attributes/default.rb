@@ -15,4 +15,3 @@ default['proxy']['ext_domain'] = 'datacite.local'
 default['proxy']['int_domain'] = 'local'
 default['proxy']['certificates'] = []
 default['proxy']['servers'] = []
-default['proxy']['intermediate_certificate'] = nil

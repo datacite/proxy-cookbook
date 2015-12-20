@@ -1,17 +1,12 @@
 server {
     server_name <%= "#{@fqdn}" %>;
-    <% if @ssl_cert %>
+
     ssl_certificate /etc/ssl/certs/<%= "#{@domain}" %>.crt;
     ssl_certificate_key /etc/ssl/private/<%= "#{@domain}" %>.key;
 
-    ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
-    ssl_prefer_server_ciphers on;
-    ssl_dhparam /etc/nginx/ssl/dhparams.pem;
-    <% end %>
     listen 80 default_server;
-    <% if @ssl_cert %>
     listen 443 ssl default_server;
-    <% end %>
+
     root <%= "/var/www/#{node['application']}/public" %>;
 
     rewrite ^(.+)/+$ $1 permanent;
