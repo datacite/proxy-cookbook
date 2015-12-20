@@ -26,6 +26,31 @@ directory "#{node['nginx']['dir']}/ssl" do
   mode '0755'
 end
 
+node['proxy']['certificates'].each do |name|
+  remote_file "Copy #{name} certificate" do
+    path "#{node['nginx']['dir']}/ssl/#{name}.crt"
+    source "file:///var/www/#{node['application']}/ssl/#{name}.crt"
+    owner 'root'
+    group 'root'
+    mode '0644'
+  end
+
+  remote_file "Copy #{name} key" do
+    path "#{node['nginx']['dir']}/ssl/#{name}.key"
+    source "file:///var/www/#{node['application']}/ssl/#{name}.key"
+    owner 'root'
+    group 'root'
+    mode '0644'
+  end
+
+  ssl_certificate name do
+    common_name name
+    source 'file'
+    key_path "#{node['nginx']['dir']}/ssl/#{name}.key"
+    cert_path "#{node['nginx']['dir']}/ssl/#{name}.crt"
+  end
+end
+
 openssl_dhparam '/etc/nginx/ssl/dhparam.pem' do
   key_length 2048
 end
@@ -44,6 +69,7 @@ end
 node['proxy']['servers'].each do |name|
   hostname = name.split(".").first
   domain = name.split(".").slice(1..-1).join(".")
+  cert = ssl_certificate domain
 
   template "#{node['nginx']['dir']}/sites-enabled/#{hostname}.conf" do
     source "server.conf.erb"
@@ -54,7 +80,8 @@ node['proxy']['servers'].each do |name|
     variables(
       fqdn: name,
       hostname: hostname,
-      domain: domain
+      ssl_key: cert.key_path,
+      ssl_cert: cert.chain_combined_path
     )
     notifies :reload, 'service[nginx]'
   end
@@ -65,7 +92,7 @@ capistrano node["application"] do
   user            ENV['DEPLOY_USER']
   group           ENV['DEPLOY_GROUP']
   rails_env       ENV['RAILS_ENV']
-  action          [:config, :consul_install, :rsyslog_config, :restart]
+  action          [:consul_install, :rsyslog_config, :restart]
 end
 
 service 'nginx' do
