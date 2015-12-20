@@ -20,6 +20,16 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
 end
 
 # configure SSL
+directory "#{node['nginx']['dir']}/ssl" do
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
+openssl_dhparam '/etc/nginx/ssl/dhparam.pem' do
+  key_length 2048
+end
+
 template 'ssl.conf' do
   path   "#{node['nginx']['dir']}/include.d/ssl.conf"
   source 'ssl.conf'
