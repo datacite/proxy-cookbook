@@ -19,10 +19,21 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   notifies :reload, 'service[nginx]'
 end
 
+# configure SSL
+template 'ssl.conf' do
+  path   "#{node['nginx']['dir']}/include.d/ssl.conf"
+  source 'ssl.conf'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  cookbook 'proxy'
+  notifies :reload, 'service[nginx]'
+end
+
 # set up reverse proxy for each server
 node['proxy']['servers'].each do |name|
   hostname = name.split(".").first
-  domain = name.split(".").slice(1..-2).join(".")
+  domain = name.split(".").slice(1..-1).join(".")
 
   template "#{node['nginx']['dir']}/sites-enabled/#{hostname}.conf" do
     source "server.conf.erb"
