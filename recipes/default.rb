@@ -21,7 +21,10 @@ end
 
 # set up reverse proxy for each server
 node['proxy']['servers'].each do |name|
-  template "#{node['nginx']['dir']}/sites-enabled/#{name}.conf" do
+  hostname = name.split(".").first
+  domain = name.split(".").slice(1..-2).join(".")
+
+  template "#{node['nginx']['dir']}/sites-enabled/#{hostname}.conf" do
     source "server.conf.erb"
     owner 'root'
     group 'root'
@@ -29,8 +32,8 @@ node['proxy']['servers'].each do |name|
     cookbook 'proxy'
     variables(
       fqdn: name,
-      hostname: name.split(".").first,
-      domain: name.split(".").slice(1..-2).join(".")
+      hostname: hostname,
+      domain: domain
     )
     notifies :reload, 'service[nginx]'
   end
