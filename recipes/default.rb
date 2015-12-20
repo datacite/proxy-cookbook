@@ -26,6 +26,14 @@ directory "#{node['nginx']['dir']}/ssl" do
   mode '0755'
 end
 
+remote_file "Copy intermediate certificate" do
+  path "#{node['nginx']['dir']}/ssl/#{node['proxy']['intermediate_certificate']}"
+  source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['intermediate_certificate']}"
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
 node['proxy']['certificates'].each do |name|
   remote_file "Copy #{name} certificate" do
     path "#{node['nginx']['dir']}/ssl/#{name}.crt"
@@ -46,6 +54,8 @@ node['proxy']['certificates'].each do |name|
   ssl_certificate name do
     common_name name
     source 'file'
+    chain_source 'file'
+    chain_name node['proxy']['intermediate_certificate']
     key_path "#{node['nginx']['dir']}/ssl/#{name}.key"
     cert_path "#{node['nginx']['dir']}/ssl/#{name}.crt"
   end
