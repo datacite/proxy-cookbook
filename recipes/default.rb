@@ -62,7 +62,14 @@ template 'ssl.conf' do
 end
 
 # setup endpoint for health checks
-cert = ssl_certificate node['proxy']['ext_domain']
+if ::File.exist?("/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt")
+  cert = ssl_certificate node['proxy']['ext_domain']
+  ssl_key = cert.key_path
+  ssl_cert = cert.chain_combined_path
+else
+  ssl_key = nil
+  ssl_cert = nil
+end
 
 template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
@@ -72,8 +79,8 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   cookbook 'proxy'
   variables(
     fqdn: "#{node['application']}.#{node['proxy']['ext_domain']}",
-    ssl_key: cert.key_path,
-    ssl_cert: cert.chain_combined_path
+    ssl_key: ssl_key,
+    ssl_cert: ssl_cert
   )
   notifies :reload, 'service[nginx]'
 end
@@ -82,9 +89,9 @@ end
 node['proxy']['servers'].each do |name|
   hostname = name.split(".").first
   domain = name.split(".").slice(1..-1).join(".")
-  cert = ssl_certificate domain
 
-  if cert
+  if ::File.exist?("/etc/ssl/certs/#{domain}.crt")
+    cert = ssl_certificate domain
     ssl_key = cert.key_path
     ssl_cert = cert.chain_combined_path
   else

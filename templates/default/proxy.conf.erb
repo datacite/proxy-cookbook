@@ -1,12 +1,13 @@
 server {
     server_name <%= "#{@fqdn}" %>;
-
-    #ssl_certificate /etc/ssl/certs/<%= "#{@domain}" %>.crt;
-    #ssl_certificate_key /etc/ssl/private/<%= "#{@domain}" %>.key;
-
+    <% if @ssl_cert %>
+    ssl_certificate /etc/ssl/certs/<%= "#{@domain}" %>.crt;
+    ssl_certificate_key /etc/ssl/private/<%= "#{@domain}" %>.key;
+    <% end %>
     listen 80 default_server;
-    #listen 443 ssl default_server;
-
+    <% if @ssl_cert %>
+    listen 443 ssl default_server;
+    <% end %>
     root <%= "/var/www/#{node['application']}/public" %>;
 
     rewrite ^(.+)/+$ $1 permanent;
