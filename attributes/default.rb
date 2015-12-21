@@ -15,4 +15,4 @@ default['proxy']['ext_domain'] = 'datacite.local'
 default['proxy']['int_domain'] = 'local'
 default['proxy']['certificates'] = []
 default['proxy']['servers'] = []
-default['proxy']['ssl_verify_client'] = true
+default['proxy']['always_use_ssl'] = true

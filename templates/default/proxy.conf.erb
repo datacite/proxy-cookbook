@@ -1,8 +1,10 @@
+<% if node['proxy']['always_use_ssl'] %>
 server {
     server_name <%= "#{@fqdn}" %>;
-    listen 80 default_server;
+    listen 80;
     return 301 https://<%= "#{@fqdn}" %>/status;
 }
+<% end %>
 
 server {
     server_name <%= "#{@fqdn}" %>;
@@ -10,6 +12,9 @@ server {
     ssl_certificate <%= "#{@ssl_cert}" %>;
     ssl_certificate_key <%= "#{@ssl_key}" %>;
 
+    <% if !node['proxy']['always_use_ssl'] %>
+    listen 80;
+    <% end %>
     listen 443 ssl default_server;
 
     root <%= "/var/www/#{node['application']}/public" %>;

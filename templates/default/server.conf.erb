@@ -1,8 +1,10 @@
+<% if node['proxy']['always_use_ssl'] %>
 server {
     server_name <%= "#{@fqdn}" %>;
     listen 80;
     return 301 https://<%= "#{@fqdn}" %>$request_uri;
 }
+<% end %>
 
 server {
     server_name <%= "#{@fqdn}" %>;
@@ -13,6 +15,9 @@ server {
     resolver <%= "#{node['proxy']['resolver']}" %>;
     set $backend http://<%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
 
+    <% if !node['proxy']['always_use_ssl'] %>
+    listen 80;
+    <% end %>
     listen 443 ssl;
 
     location / {
