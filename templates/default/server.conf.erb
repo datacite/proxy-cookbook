@@ -5,7 +5,7 @@ server {
     ssl_certificate_key <%= "#{@ssl_key}" %>;
 
     resolver <%= "#{node['proxy']['resolver']}" %>;
-    set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
+    set $backend http://<%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
 
     listen 80;
     listen 443 ssl;

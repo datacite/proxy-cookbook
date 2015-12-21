@@ -1,8 +1,8 @@
 server {
     server_name <%= "#{@fqdn}" %>;
 
-    ssl_certificate /etc/ssl/certs/<%= "#{@domain}" %>.crt;
-    ssl_certificate_key /etc/ssl/private/<%= "#{@domain}" %>.key;
+    ssl_certificate <%= "#{@ssl_cert}" %>;
+    ssl_certificate_key <%= "#{@ssl_key}" %>;
 
     listen 80 default_server;
     listen 443 ssl default_server;
