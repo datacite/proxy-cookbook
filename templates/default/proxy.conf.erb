@@ -1,7 +1,7 @@
 server {
     server_name <%= "#{@fqdn}" %>;
     listen 80 default_server;
-    return 301 https://<%= "#{@fqdn}" %>$request_uri;
+    return 301 https://<%= "#{@fqdn}" %>/status;
 }
 
 server {
@@ -20,5 +20,9 @@ server {
         alias <%= "/var/www/#{node['application']}/public" %>/status/index.html;
         autoindex off;
         default_type text/html;
+    }
+
+    location / {
+        return 301 https://<%= "#{@fqdn}" %>/status;
     }
 }
