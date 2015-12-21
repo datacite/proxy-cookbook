@@ -1,5 +1,11 @@
 server {
     server_name <%= "#{@fqdn}" %>;
+    listen 80;
+    return 301 https://<%= "#{@fqdn}" %>$request_uri;
+}
+
+server {
+    server_name <%= "#{@fqdn}" %>;
 
     ssl_certificate <%= "#{@ssl_cert}" %>;
     ssl_certificate_key <%= "#{@ssl_key}" %>;
@@ -7,7 +13,6 @@ server {
     resolver <%= "#{node['proxy']['resolver']}" %>;
     set $backend http://<%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
 
-    listen 80;
     listen 443 ssl;
 
     location / {
