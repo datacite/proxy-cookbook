@@ -6,7 +6,9 @@ server {
 
 server {
     server_name <%= "#{@fqdn}" %>;
-
+    <% unless node['proxy']['ssl_verify_client'] %>
+    ssl_verify_client off;
+    <% end %>
     ssl_certificate <%= "#{@ssl_cert}" %>;
     ssl_certificate_key <%= "#{@ssl_key}" %>;
 
