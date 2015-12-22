@@ -1,3 +1,14 @@
+<% if @count > 1 %>
+upstream $backend {
+    ip_hash;
+    <% @count.times do |i| %>
+    server <%= "#{@hostname}#{i + 1}.#{node['proxy']['int_domain']}" %>;
+    <% end %>
+}
+<% else %>
+set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
+<% end %>
+
 <% if node['proxy']['always_use_ssl'] %>
 server {
     server_name <%= "#{@hostname}.#{@domain}" %>;
@@ -13,16 +24,6 @@ server {
     ssl_certificate_key <%= "#{@ssl_key}" %>;
 
     resolver <%= "#{node['proxy']['resolver']}" %>;
-    <% if @count > 1 %>
-    upstream $backend {
-        ip_hash;
-        <% @count.times do |i| %>
-        server <%= "#{@hostname}#{i + 1}.#{node['proxy']['int_domain']}" %>;
-        <% end %>
-    }
-    <% else %>
-    set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
-    <% end %>
 
     <% if !node['proxy']['always_use_ssl'] %>
     listen 80;
