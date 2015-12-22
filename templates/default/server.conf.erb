@@ -6,7 +6,9 @@ upstream $backend {
     <% end %>
 }
 <% else %>
-set $backend <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
+upstream $backend {
+    server <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
+}
 <% end %>
 
 <% if node['proxy']['always_use_ssl'] %>
