@@ -1,12 +1,12 @@
 <% if @count > 1 %>
-upstream $<%= @hostname %>_server {
+upstream <%= @hostname %>_server {
     ip_hash;
     <% @count.times do |i| %>
     server <%= "#{@hostname}#{i + 1}.#{node['proxy']['int_domain']}" %>;
     <% end %>
 }
 <% else %>
-upstream $<%= @hostname %>_server {
+upstream <%= @hostname %>_server {
     server <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
 }
 <% end %>
@@ -33,7 +33,7 @@ server {
     listen 443 ssl;
 
     location / {
-        proxy_pass http://$<%= @hostname %>_server;
+        proxy_pass http://<%= @hostname %>_server;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
