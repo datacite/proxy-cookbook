@@ -1,13 +1,13 @@
 <% if node['proxy']['always_use_ssl'] %>
 server {
-    server_name <%= "#{@hostname}"."#{@domain}" %>;
+    server_name <%= "#{@hostname}.#{@domain}" %>;
     listen 80;
     return 301 https://$host/status;
 }
 <% end %>
 
 server {
-    server_name <%= "#{@hostname}"."#{@domain}" %>;
+    server_name <%= "#{@hostname}.#{@domain}" %>;
 
     ssl_certificate <%= "#{@ssl_cert}" %>;
     ssl_certificate_key <%= "#{@ssl_key}" %>;
