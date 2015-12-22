@@ -54,7 +54,8 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   mode '0644'
   cookbook 'proxy'
   variables(
-    fqdn: "#{node['application']}.#{node['proxy']['ext_domain']}",
+    hostname: "#{node['application']}",
+    domain: "#{node['proxy']['ext_domain']}",
     ssl_key: cert.key_path,
     ssl_cert: cert.cert_path
   )
@@ -62,9 +63,11 @@ template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
 end
 
 # set up reverse proxy for each server
-node['proxy']['servers'].each do |name|
-  hostname = name.split(".").first
-  domain = name.split(".").slice(1..-1).join(".")
+node['proxy']['servers'].each do |server|
+  hostname = server['hostname']
+  domain = server['domain']
+  count = server['count'] || 1
+
   cert = ssl_certificate domain
 
   template "#{node['nginx']['dir']}/sites-enabled/#{hostname}.conf" do
@@ -74,8 +77,9 @@ node['proxy']['servers'].each do |name|
     mode '0644'
     cookbook 'proxy'
     variables(
-      fqdn: name,
       hostname: hostname,
+      domain: domain,
+      count: count,
       ssl_key: cert.key_path,
       ssl_cert: cert.cert_path
     )
