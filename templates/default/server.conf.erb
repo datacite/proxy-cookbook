@@ -17,7 +17,7 @@ server {
     upstream $backend {
         ip_hash;
         <% @count.times do |i| %>
-        server <%= "#{@hostname}#{i}.#{node['proxy']['int_domain']}" %>;
+        server <%= "#{@hostname}#{i + 1}.#{node['proxy']['int_domain']}" %>;
         <% end %>
     }
     <% else %>
