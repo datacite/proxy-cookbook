@@ -29,6 +29,13 @@ openssl_dhparam '/etc/ssl/private/dhparam.pem' do
   key_length 2048
 end
 
+# add conf directory
+directory "#{node['openresty']['dir']}/include.d" do
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
 template 'ssl.conf' do
   path   "#{node['openresty']['dir']}/include.d/ssl.conf"
   source 'ssl.conf'
