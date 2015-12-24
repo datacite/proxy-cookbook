@@ -86,6 +86,12 @@ template 'ssl.conf' do
   notifies :reload, 'service[nginx]'
 end
 
+# delete default configuration
+file "#{node['nginx']['dir']}/sites-enabled/default" do
+  action :delete
+  notifies :reload, 'service[nginx]'
+end
+
 # setup endpoint for health checks
 template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
