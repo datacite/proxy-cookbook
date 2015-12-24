@@ -32,7 +32,7 @@ template 'nginx.conf' do
   owner  'root'
   group  'root'
   mode   '0644'
-  cookbook 'passenger_nginx'
+  cookbook 'proxy'
   variables(
     :rsyslog_server => node['nginx']['rsyslog_server']
   )
