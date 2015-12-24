@@ -1,87 +1,116 @@
-include_recipe 'openresty'
+include_recipe "apt"
 
-node['proxy']['certificates'].each do |name|
-  remote_file "Copy #{name} certificate" do
-    path "/etc/ssl/certs/#{name}.crt"
-    source "file:///var/www/#{node['application']}/ssl/#{name}.crt"
-    owner 'root'
-    group 'root'
-    mode '0644'
-  end
+execute "apt-get update" do
+  action :nothing
+end
 
-  remote_file "Copy #{name} key" do
-    path "/etc/ssl/private/#{name}.key"
-    source "file:///var/www/#{node['application']}/ssl/#{name}.key"
-    owner 'root'
-    group 'root'
-    mode '0644'
-  end
+# add PPA for Nginx mainline
+apt_repository "nginx" do
+  uri          "ppa:nginx/development"
+  distribution node['lsb']['codename']
+  components   ["main"]
+  action       :add
+  notifies     :run, "execute[apt-get update]", :immediately
+end
 
-  ssl_certificate name do
-    common_name name
-    source 'file'
-    key_path "/etc/ssl/private/#{name}.key"
-    cert_path "/etc/ssl/certs/#{name}.crt"
+# install nginx
+%w{ nginx-full }.each do |pkg|
+  package pkg do
+    options "-y --force-yes"
+    action :install
   end
 end
 
+if ENV['RSYSLOG_HOST']
+  node.override['nginx']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
+end
+
+# nginx configuration
+template 'nginx.conf' do
+  path   "#{node['nginx']['dir']}/nginx.conf"
+  source 'nginx.conf.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  cookbook 'passenger_nginx'
+  variables(
+    :rsyslog_server => node['nginx']['rsyslog_server']
+  )
+  notifies :reload, 'service[nginx]'
+end
+
+remote_file "Copy #{node['nginx']['ext_domain']} certificate" do
+  path "/etc/ssl/certs/#{node['nginx']['ext_domain']}.crt"
+  source "file:///var/www/#{node['application']}/ssl/#{node['nginx']['ext_domain']}.crt"
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
+remote_file "Copy #{node['nginx']['ext_domain']} key" do
+  path "/etc/ssl/private/#{node['nginx']['ext_domain']}.key"
+  source "file:///var/www/#{node['application']}/ssl/#{node['nginx']['ext_domain']}.key"
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
+ssl_certificate node['nginx']['ext_domain'] do
+  common_name node['nginx']['ext_domain']
+  source 'file'
+  key_path "/etc/ssl/private/#{node['nginx']['ext_domain']}.key"
+  cert_path "/etc/ssl/certs/#{node['nginx']['ext_domain']}.crt"
+end
+
+cert = ssl_certificate node['proxy']['ext_domain']
+
 template 'ssl.conf' do
-  path   "#{node['openresty']['dir']}/conf.d/ssl.conf"
+  path   "#{node['nginx']['dir']}/conf.d/ssl.conf"
   source 'ssl.conf'
   owner  'root'
   group  'root'
   mode   '0644'
   cookbook 'proxy'
+  variables(
+    ssl_key: cert.key_path,
+    ssl_cert: cert.cert_path,
+    resolver: node['proxy']['resolver']
+  )
   notifies :reload, 'service[nginx]'
 end
 
 # setup endpoint for health checks
-cert = ssl_certificate node['proxy']['ext_domain']
-
-template "#{node['openresty']['dir']}/sites-enabled/proxy.conf" do
+template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
   owner 'root'
   group 'root'
   mode '0644'
   cookbook 'proxy'
   variables(
-    hostname: "#{node['application']}",
-    domain: "#{node['proxy']['ext_domain']}",
-    ssl_key: cert.key_path,
-    ssl_cert: cert.cert_path
+    hostname: node['application'],
+    domain: node['proxy']['ext_domain']
   )
   notifies :reload, 'service[nginx]'
 end
 
-# set up reverse proxy for each server
+# set up reverse proxy
 if node['ruby']['rails_env'] == "development"
   dir = "sites-available"
 else
   dir = "sites-enabled"
 end
 
-node['proxy']['servers'].each do |server|
-  hostname = server['hostname']
-  domain = server['domain']
-  count = server['count'] || 1
-
-  cert = ssl_certificate domain
-
-  template "#{node['openresty']['dir']}/#{dir}/#{hostname}.conf" do
-    source "server.conf.erb"
-    owner 'root'
-    group 'root'
-    mode '0644'
-    cookbook 'proxy'
-    variables(
-      hostname: hostname,
-      domain: domain,
-      count: count,
-      ssl_key: cert.key_path,
-      ssl_cert: cert.cert_path
-    )
-    notifies :reload, 'service[nginx]'
-  end
+template "#{node['nginx']['dir']}/#{dir}/#{node['nginx']['ext_domain']}.conf" do
+  source "server.conf.erb"
+  owner 'root'
+  group 'root'
+  mode '0644'
+  cookbook 'proxy'
+  variables(
+    domain: node['proxy']['ext_domain'],
+    regex_domain: node['proxy']['ext_domain'].gsub(/\./, "\.")
+  )
+  notifies :reload, 'service[nginx]'
 end
 
 # create required files and folders, and deploy application

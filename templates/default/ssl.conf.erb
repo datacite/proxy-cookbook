@@ -1,6 +1,11 @@
+ssl_certificate <%= @ssl_cert %>;
+ssl_certificate_key <%= @ssl_key %>;
+
 ssl_session_cache shared:SSL:10m;
 ssl_session_timeout 30m;
 
 ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
 ssl_ciphers HIGH:!ADH:!EXPORT:!aNULL:!RC4:+HIGH;
 ssl_prefer_server_ciphers on;
+
+resolver <%= @resolver %>;

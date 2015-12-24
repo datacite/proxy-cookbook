@@ -1,20 +1,13 @@
-<% if node['proxy']['always_use_ssl'] %>
+# redirect all http traffic to https
 server {
-    server_name <%= "#{@hostname}.#{@domain}" %>;
+    server_name _;
     listen 80 default_server;
-    return 301 https://$host/status;
+    return 301 https://$hostname$request_uri;
 }
-<% end %>
 
 server {
     server_name <%= "#{@hostname}.#{@domain}" %>;
 
-    ssl_certificate <%= "#{@ssl_cert}" %>;
-    ssl_certificate_key <%= "#{@ssl_key}" %>;
-
-    <% if !node['proxy']['always_use_ssl'] %>
-    listen 80 default_server;
-    <% end %>
     listen 443 ssl default_server;
 
     root <%= "/var/www/#{node['application']}/public" %>;

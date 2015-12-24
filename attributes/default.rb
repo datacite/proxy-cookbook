@@ -1,3 +1,10 @@
+default['nginx']['user'] = 'www-data'
+default['nginx']['dir'] = '/etc/nginx'
+default['nginx']['log_dir'] = '/var/log/nginx'
+default['nginx']['worker_processes'] = 1
+default['nginx']['worker_connections'] = 1024
+default['nginx']['rsyslog_server'] = '127.0.0.1'
+
 default['ruby']['deploy_user'] = "vagrant"
 default['ruby']['deploy_group'] = "vagrant"
 default['ruby']['rails_env'] = "development"
@@ -10,7 +17,4 @@ default["application"] = "proxy"
 
 default['proxy']['resolver'] = '10.0.0.2'
 default['proxy']['ext_domain'] = 'datacite.local'
-default['proxy']['int_domain'] = 'local'
-default['proxy']['certificates'] = []
-default['proxy']['servers'] = []
-default['proxy']['always_use_ssl'] = true
+default['proxy']['int_domain'] = 'int.datacite.local'

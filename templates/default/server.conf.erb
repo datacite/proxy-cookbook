@@ -1,39 +1,11 @@
-<% if @count > 1 %>
-upstream <%= @hostname %>_server {
-    ip_hash;
-    <% @count.times do |i| %>
-    server <%= "#{@hostname}#{i + 1}.#{node['proxy']['int_domain']}" %>;
-    <% end %>
-}
-<% else %>
-upstream <%= @hostname %>_server {
-    server <%= "#{@hostname}.#{node['proxy']['int_domain']}" %>;
-}
-<% end %>
-
-<% if node['proxy']['always_use_ssl'] %>
 server {
-    server_name <%= "#{@hostname}.#{@domain}" %>;
-    listen 80;
-    return 301 https://<%= "#{@hostname}.#{@domain}" %>$request_uri;
-}
-<% end %>
+    server_name ~^(?<subdomain>.+)<%= "\.#{@regex_domain}" %>$;
 
-server {
-    server_name <%= "#{@hostname}.#{@domain}" %>;
-
-    ssl_certificate <%= "#{@ssl_cert}" %>;
-    ssl_certificate_key <%= "#{@ssl_key}" %>;
-
-    resolver <%= "#{node['proxy']['resolver']}" %>;
-
-    <% if !node['proxy']['always_use_ssl'] %>
-    listen 80;
-    <% end %>
     listen 443 ssl;
+    set $backend $subdomain.<%= @domain %>;
 
     location / {
-        proxy_pass http://<%= @hostname %>_server;
+        proxy_pass http://$backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
