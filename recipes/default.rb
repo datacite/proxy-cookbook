@@ -30,7 +30,7 @@ openssl_dhparam '/etc/ssl/private/dhparam.pem' do
 end
 
 template 'ssl.conf' do
-  path   "#{node['nginx']['dir']}/include.d/ssl.conf"
+  path   "#{node['openresty']['dir']}/include.d/ssl.conf"
   source 'ssl.conf'
   owner  'root'
   group  'root'
@@ -42,7 +42,7 @@ end
 # setup endpoint for health checks
 cert = ssl_certificate node['proxy']['ext_domain']
 
-template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
+template "#{node['openresty']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
   owner 'root'
   group 'root'
@@ -65,7 +65,7 @@ node['proxy']['servers'].each do |server|
 
   cert = ssl_certificate domain
 
-  template "#{node['nginx']['dir']}/sites-enabled/#{hostname}.conf" do
+  template "#{node['openresty']['dir']}/sites-enabled/#{hostname}.conf" do
     source "server.conf.erb"
     owner 'root'
     group 'root'
