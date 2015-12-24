@@ -1,9 +1,4 @@
-# install nginx and create configuration file and application root
-passenger_nginx node["application"] do
-  user            ENV['DEPLOY_USER']
-  group           ENV['DEPLOY_GROUP']
-  action          :config
-end
+include_recipe 'openresty'
 
 node['proxy']['certificates'].each do |name|
   remote_file "Copy #{name} certificate" do
