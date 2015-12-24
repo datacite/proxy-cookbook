@@ -39,27 +39,27 @@ template 'nginx.conf' do
   notifies :reload, 'service[nginx]'
 end
 
-remote_file "Copy #{node['nginx']['ext_domain']} certificate" do
-  path "/etc/ssl/certs/#{node['nginx']['ext_domain']}.crt"
-  source "file:///var/www/#{node['application']}/ssl/#{node['nginx']['ext_domain']}.crt"
+remote_file "Copy #{node['proxy']['ext_domain']} certificate" do
+  path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
+  source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['ext_domain']}.crt"
   owner 'root'
   group 'root'
   mode '0644'
 end
 
-remote_file "Copy #{node['nginx']['ext_domain']} key" do
-  path "/etc/ssl/private/#{node['nginx']['ext_domain']}.key"
-  source "file:///var/www/#{node['application']}/ssl/#{node['nginx']['ext_domain']}.key"
+remote_file "Copy #{node['proxy']['ext_domain']} key" do
+  path "/etc/ssl/private/#{node['proxy']['ext_domain']}.key"
+  source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['ext_domain']}.key"
   owner 'root'
   group 'root'
   mode '0644'
 end
 
-ssl_certificate node['nginx']['ext_domain'] do
-  common_name node['nginx']['ext_domain']
+ssl_certificate node['proxy']['ext_domain'] do
+  common_name node['proxy']['ext_domain']
   source 'file'
-  key_path "/etc/ssl/private/#{node['nginx']['ext_domain']}.key"
-  cert_path "/etc/ssl/certs/#{node['nginx']['ext_domain']}.crt"
+  key_path "/etc/ssl/private/#{node['proxy']['ext_domain']}.key"
+  cert_path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
 end
 
 cert = ssl_certificate node['proxy']['ext_domain']
@@ -100,7 +100,7 @@ else
   dir = "sites-enabled"
 end
 
-template "#{node['nginx']['dir']}/#{dir}/#{node['nginx']['ext_domain']}.conf" do
+template "#{node['nginx']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   source "server.conf.erb"
   owner 'root'
   group 'root'
