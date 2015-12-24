@@ -4,6 +4,13 @@ execute "apt-get update" do
   action :nothing
 end
 
+# install required libraries
+node['ruby']['packages'].each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
 # add PPA for Nginx mainline
 apt_repository "nginx" do
   uri          "ppa:nginx/development"
