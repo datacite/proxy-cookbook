@@ -66,7 +66,7 @@ cert = ssl_certificate node['proxy']['ext_domain']
 
 template 'ssl.conf' do
   path   "#{node['nginx']['dir']}/conf.d/ssl.conf"
-  source 'ssl.conf'
+  source 'ssl.conf.erb'
   owner  'root'
   group  'root'
   mode   '0644'
