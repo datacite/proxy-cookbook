@@ -29,15 +29,8 @@ openssl_dhparam '/etc/ssl/private/dhparam.pem' do
   key_length 2048
 end
 
-# add conf directory
-directory "#{node['openresty']['dir']}/include.d" do
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
-
 template 'ssl.conf' do
-  path   "#{node['openresty']['dir']}/include.d/ssl.conf"
+  path   "#{node['openresty']['dir']}/conf.d/ssl.conf"
   source 'ssl.conf'
   owner  'root'
   group  'root'
@@ -65,6 +58,12 @@ template "#{node['openresty']['dir']}/sites-enabled/proxy.conf" do
 end
 
 # set up reverse proxy for each server
+if node['ruby']['rails_env'] == "development"
+  dir = "sites-available"
+else
+  dir = "sites-enabled"
+end
+
 node['proxy']['servers'].each do |server|
   hostname = server['hostname']
   domain = server['domain']
@@ -72,7 +71,7 @@ node['proxy']['servers'].each do |server|
 
   cert = ssl_certificate domain
 
-  template "#{node['openresty']['dir']}/sites-enabled/#{hostname}.conf" do
+  template "#{node['openresty']['dir']}/#{dir}/#{hostname}.conf" do
     source "server.conf.erb"
     owner 'root'
     group 'root'
