@@ -1,7 +1,7 @@
 <% if node['proxy']['always_use_ssl'] %>
 server {
     server_name <%= "#{@hostname}.#{@domain}" %>;
-    listen 80;
+    listen 80 default_server;
     return 301 https://$host/status;
 }
 <% end %>
@@ -13,7 +13,7 @@ server {
     ssl_certificate_key <%= "#{@ssl_key}" %>;
 
     <% if !node['proxy']['always_use_ssl'] %>
-    listen 80;
+    listen 80 default_server;
     <% end %>
     listen 443 ssl default_server;
 
@@ -22,8 +22,7 @@ server {
     rewrite ^(.+)/+$ $1 permanent;
 
     location = /status {
-        alias <%= "/var/www/#{node['application']}/public" %>/status/index.html;
-        autoindex off;
         default_type text/html;
+        echo "OK";
     }
 }
