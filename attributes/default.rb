@@ -8,8 +8,6 @@ default['ruby']['packages'] += %w{ avahi-daemon libnss-mdns } if node['ruby']['r
 
 default["application"] = "proxy"
 
-default['nodejs']['repo'] = 'https://deb.nodesource.com/node_0.12'
-
 default['proxy']['resolver'] = '10.0.0.2'
 default['proxy']['ext_domain'] = 'datacite.local'
 default['proxy']['int_domain'] = 'local'
