@@ -121,7 +121,8 @@ template "#{node['nginx']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   cookbook 'proxy'
   variables(
     domain: node['proxy']['ext_domain'],
-    regex_domain: node['proxy']['ext_domain'].gsub(/\./, "\.")
+    regex_domain: node['proxy']['ext_domain'].gsub(/\./, "\."),
+    int_domain: node['proxy']['int_domain']
   )
   notifies :reload, 'service[nginx]'
 end

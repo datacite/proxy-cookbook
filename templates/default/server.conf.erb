@@ -2,7 +2,7 @@ server {
     server_name ~^(?<subdomain>.+)<%= "\.#{@regex_domain}" %>$;
 
     listen 443 ssl;
-    set $backend $subdomain.<%= @domain %>;
+    set $backend $subdomain.<%= @int_domain %>;
 
     location / {
         proxy_pass http://$backend;
