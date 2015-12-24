@@ -25,10 +25,6 @@ node['proxy']['certificates'].each do |name|
   end
 end
 
-openssl_dhparam '/etc/ssl/private/dhparam.pem' do
-  key_length 2048
-end
-
 template 'ssl.conf' do
   path   "#{node['openresty']['dir']}/conf.d/ssl.conf"
   source 'ssl.conf'
