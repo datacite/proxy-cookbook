@@ -127,6 +127,23 @@ template "#{node['nginx']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   notifies :reload, 'service[nginx]'
 end
 
+# allow http requests for some subdomains
+node['proxy']['http_domains'].each do |subdomain|
+  template "#{node['nginx']['dir']}/#{dir}/#{subdomain}.conf" do
+    source "server_http.conf.erb"
+    owner 'root'
+    group 'root'
+    mode '0644'
+    cookbook 'proxy'
+    variables(
+      subdomain: subdomain,
+      domain: node['proxy']['ext_domain'],
+      int_domain: node['proxy']['int_domain']
+    )
+    notifies :reload, 'service[nginx]'
+  end
+end
+
 # create required files and folders, and deploy application
 capistrano node["application"] do
   user            ENV['DEPLOY_USER']
