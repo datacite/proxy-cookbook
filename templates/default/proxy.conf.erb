@@ -1,8 +1,8 @@
 # redirect all http traffic to https
 server {
-    server_name *.<%= @domain %>;
+    server_name ~^(?<subdomain>.+)<%= "\.#{@domain}" %>$;
     listen 80 default_server;
-    return 301 https://$host$request_uri$is_args$args;
+    return 301 https://$subdomain.<%= @domain %>$is_args$args;
 }
 
 server {
