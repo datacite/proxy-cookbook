@@ -2,7 +2,7 @@
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
-    set $backend schema.<%= @int_domain %>;
+    set $backend <%= @subdomain %>.<%= @int_domain %>;
 
     location / {
         proxy_pass http://$backend;
