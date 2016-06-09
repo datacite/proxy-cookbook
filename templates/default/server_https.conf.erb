@@ -1,4 +1,4 @@
-# allow traffic via http and allow internal ports other than 80 for some subdomains
+# allow internal ports other than 80 for some subdomains
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;

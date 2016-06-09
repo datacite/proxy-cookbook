@@ -127,18 +127,39 @@ template "#{node['nginx']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   notifies :reload, 'service[nginx]'
 end
 
-# allow http requests for some subdomains
-node['proxy']['http_domains'].each do |subdomain|
+# allow more specific configurations for specific subdomains, e.g. enable http
+# or use a specific port internally
+node['proxy']['subdomains'].each do |subdomain|
+  if subdomain['allow_http']
+    template "#{node['nginx']['dir']}/#{dir}/#{subdomain}_http.conf" do
+      source "server_http.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        int_domain: node['proxy']['int_domain']
+        int_subdomain: subdomain['int_subdomain']
+        int_port: subdomain['port']
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  end
+
   template "#{node['nginx']['dir']}/#{dir}/#{subdomain}.conf" do
-    source "server_http.conf.erb"
+    source "server_https.conf.erb"
     owner 'root'
     group 'root'
     mode '0644'
     cookbook 'proxy'
     variables(
-      subdomain: subdomain,
+      subdomain: subdomain['subdomain'],
       domain: node['proxy']['ext_domain'],
       int_domain: node['proxy']['int_domain']
+      int_subdomain: subdomain['int_subdomain']
+      int_port: subdomain['port']
     )
     notifies :reload, 'service[nginx]'
   end
