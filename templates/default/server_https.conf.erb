@@ -1,7 +1,7 @@
 # allow internal ports other than 80 for some subdomains
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
-    listen 80;
+    listen 443;
     set $backend <%= @int_subdomain %>.<%= @int_domain %>:<%= @int_port %>;
 
     location / {
