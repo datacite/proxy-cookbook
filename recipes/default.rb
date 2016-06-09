@@ -131,7 +131,7 @@ end
 # or use a specific port internally
 node['proxy']['subdomains'].each do |subdomain|
   if subdomain['allow_http']
-    template "#{node['nginx']['dir']}/#{dir}/#{subdomain}_http.conf" do
+    template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}_http.conf" do
       source "server_http.conf.erb"
       owner 'root'
       group 'root'
@@ -148,7 +148,7 @@ node['proxy']['subdomains'].each do |subdomain|
     end
   end
 
-  template "#{node['nginx']['dir']}/#{dir}/#{subdomain}.conf" do
+  template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
     source "server_https.conf.erb"
     owner 'root'
     group 'root'
