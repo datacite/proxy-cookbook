@@ -142,7 +142,7 @@ node['proxy']['subdomains'].each do |subdomain|
         domain: node['proxy']['ext_domain'],
         int_domain: node['proxy']['int_domain']
         int_subdomain: subdomain['int_subdomain']
-        int_port: subdomain['port']
+        int_port: subdomain['port'] || 80
       )
       notifies :reload, 'service[nginx]'
     end
@@ -159,7 +159,7 @@ node['proxy']['subdomains'].each do |subdomain|
       domain: node['proxy']['ext_domain'],
       int_domain: node['proxy']['int_domain']
       int_subdomain: subdomain['int_subdomain']
-      int_port: subdomain['port']
+      int_port: subdomain['port'] || 80
     )
     notifies :reload, 'service[nginx]'
   end
