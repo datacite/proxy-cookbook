@@ -2,7 +2,7 @@
 server {
     server_name ~^(?<subdomain>.+)<%= "\.#{@domain}" %>$;
     listen 80 default_server;
-    return 301 https://$subdomain.<%= @domain %>$is_args$args;
+    return 301 https://$subdomain.<%= @domain %>$request_uri$is_args$args;
 }
 
 server {
