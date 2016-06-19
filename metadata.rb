@@ -4,7 +4,7 @@ maintainer_email  "mfenner@datacite.org"
 license           "Apache 2.0"
 description       "Configures proxy"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "1.3.5"
+version           "1.3.6"
 
 # opscode cookbooks
 depends           "apt"
