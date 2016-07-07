@@ -28,6 +28,11 @@ end
   end
 end
 
+# install SSL fix
+execute "apt-get install --only-upgrade libssl1.0.0" do
+  action :run
+end
+
 if ENV['RSYSLOG_HOST']
   node.override['nginx']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
 end
