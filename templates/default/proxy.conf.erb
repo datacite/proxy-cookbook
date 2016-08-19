@@ -23,3 +23,12 @@ server {
       return 301 https://$host/status;
     }
 }
+
+server {
+    location /basic_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
+}

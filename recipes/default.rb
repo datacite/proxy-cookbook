@@ -62,15 +62,15 @@ template 'nginx.conf' do
 end
 
 # librato collectd configuration
-template 'librato.conf' do
-  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
-  source 'librato.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  cookbook 'proxy'
-  notifies :reload, 'service[collectd]'
-end
+# template 'librato.conf' do
+#   path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
+#   source 'librato.conf.erb'
+#   owner  'root'
+#   group  'root'
+#   mode   '0644'
+#   cookbook 'proxy'
+#   notifies :reload, 'service[collectd]'
+# end
 
 remote_file "Copy #{node['proxy']['ext_domain']} certificate" do
   path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
