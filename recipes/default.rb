@@ -4,13 +4,6 @@ execute "apt-get update" do
   action :nothing
 end
 
-# install required libraries
-node['ruby']['packages'].each do |pkg|
-  package pkg do
-    action :install
-  end
-end
-
 # add PPA for Nginx mainline
 apt_repository "nginx" do
   uri          "ppa:nginx/development"
@@ -30,6 +23,13 @@ apt_repository "librato-collectd" do
   notifies     :run, "execute[apt-get update]", :immediately
 end
 
+# install required libraries
+node['ruby']['packages'].each do |pkg|
+  package pkg do
+    action :install
+  end
+end
+
 # install nginx and collectd
 %w{ nginx-full collectd }.each do |pkg|
   package pkg do
@@ -47,17 +47,6 @@ if ENV['RSYSLOG_HOST']
   node.override['nginx']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
 end
 
-# librato collectd configuration
-template 'librato.conf' do
-  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
-  source 'librato.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  cookbook 'proxy'
-  notifies :reload, 'service[collectd]'
-end
-
 # nginx configuration
 template 'nginx.conf' do
   path   "#{node['nginx']['dir']}/nginx.conf"
@@ -70,6 +59,17 @@ template 'nginx.conf' do
     :rsyslog_server => node['nginx']['rsyslog_server']
   )
   notifies :reload, 'service[nginx]'
+end
+
+# librato collectd configuration
+template 'librato.conf' do
+  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
+  source 'librato.conf.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  cookbook 'proxy'
+  notifies :reload, 'service[collectd]'
 end
 
 remote_file "Copy #{node['proxy']['ext_domain']} certificate" do
