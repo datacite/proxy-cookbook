@@ -1,7 +1,7 @@
 include_recipe "apt"
 
 execute "apt-get update" do
-  action :nothing
+  action :run
 end
 
 # add PPA for Nginx mainline
