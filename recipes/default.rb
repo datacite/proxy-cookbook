@@ -1,16 +1,12 @@
 include_recipe "apt"
 
-execute "apt-get update" do
-  action :nothing
-end
-
 # add PPA for Nginx mainline
 apt_repository "nginx" do
   uri          "ppa:nginx/development"
   distribution node['lsb']['codename']
   components   ["main"]
   action       :add
-  notifies     :run, "execute[apt-get update]", :immediately
+  notifies     :run, "execute[apt-get update]"
 end
 
 # add PPA for librato-collectd
@@ -20,7 +16,11 @@ apt_repository "librato-collectd" do
   components   ["trusty", "main"]
   key          "https://packagecloud.io/gpg.key"
   action       :add
-  notifies     :run, "execute[apt-get update]", :immediately
+  notifies     :run, "execute[apt-get update]"
+end
+
+execute "apt-get update" do
+  action :run
 end
 
 # install required libraries
