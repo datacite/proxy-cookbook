@@ -20,8 +20,18 @@ apt_repository "nginx" do
   notifies     :run, "execute[apt-get update]", :immediately
 end
 
-# install nginx
-%w{ nginx-full }.each do |pkg|
+# add PPA for librato-collectd
+apt_repository "librato-collectd" do
+  uri          "https://packagecloud.io/librato/librato-collectd/ubuntu/"
+  distribution node['lsb']['codename']
+  components   ["trusty", "main"]
+  key          "https://packagecloud.io/gpg.key"
+  action       :add
+  notifies     :run, "execute[apt-get update]", :immediately
+end
+
+# install nginx and collectd
+%w{ nginx-full collectd }.each do |pkg|
   package pkg do
     options "-y --force-yes"
     action :install
@@ -35,6 +45,17 @@ end
 
 if ENV['RSYSLOG_HOST']
   node.override['nginx']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
+end
+
+# librato collectd configuration
+template 'librato.conf' do
+  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
+  source 'librato.conf.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  cookbook 'proxy'
+  notifies :reload, 'service[collectd]'
 end
 
 # nginx configuration
