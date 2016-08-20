@@ -184,8 +184,6 @@ end
 
 node['proxy']['subdomains'].each do |subdomain|
   if subdomain['subdomain'] == "search"
-    backend = subdomain['backend'] || "#{subdomain['int_subdomain']}.#{subdomain['int_domain']}:#{subdomain['port'] || 80}"
-
     template "#{node['nginx']['dir']}/#{dir}/search.conf" do
       source "search.conf.erb"
       owner 'root'
@@ -201,8 +199,6 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   elsif subdomain['allow_http']
-    backend = subdomain['backend'] || "#{subdomain['int_subdomain']}.#{subdomain['int_domain']}:#{subdomain['port'] || 80}"
-
     template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}_http.conf" do
       source "server_http.conf.erb"
       owner 'root'
@@ -212,15 +208,13 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: backend
+        backend: subdomain['backend']
       )
       notifies :reload, 'service[nginx]'
     end
   end
 
   if subdomain['subdomain'] != "search"
-    backend = subdomain['backend'] || "#{subdomain['int_subdomain']}.#{subdomain['int_domain']}:#{subdomain['port'] || 80}"
-
     template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_https.conf.erb"
       owner 'root'
@@ -230,7 +224,7 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: backend
+        backend: subdomain['backend']
       )
       notifies :reload, 'service[nginx]'
     end
