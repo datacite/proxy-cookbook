@@ -114,6 +114,7 @@ template 'ssl.conf' do
   variables(
     ssl_key: cert.key_path,
     ssl_cert: cert.cert_path,
+    ssl_dhparam: "/etc/ssl/private/dhparams-#{node['proxy']['ext_domain']}.pem",
     resolver: node['proxy']['resolver']
   )
   notifies :reload, 'service[nginx]'
