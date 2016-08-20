@@ -132,7 +132,7 @@ server {
     }
 
     location / {
-        set $backend <%= @search_backend %>;
+        set $backend <%= @search_backend %>$request_uri;
 
         proxy_pass http://$backend;
         proxy_set_header Host $host;
