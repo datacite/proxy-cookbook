@@ -62,15 +62,14 @@ template 'nginx.conf' do
 end
 
 # librato collectd configuration
-# template 'librato.conf' do
-#   path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
-#   source 'librato.conf.erb'
-#   owner  'root'
-#   group  'root'
-#   mode   '0644'
-#   cookbook 'proxy'
-#   notifies :reload, 'service[collectd]'
-# end
+template 'librato.conf' do
+  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
+  source 'librato.conf.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  cookbook 'proxy'
+end
 
 remote_file "Copy #{node['proxy']['ext_domain']} certificate" do
   path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
@@ -83,6 +82,14 @@ end
 remote_file "Copy #{node['proxy']['ext_domain']} key" do
   path "/etc/ssl/private/#{node['proxy']['ext_domain']}.key"
   source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['ext_domain']}.key"
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
+remote_file "Copy #{node['proxy']['ext_domain']} dhparams" do
+  path "/etc/ssl/private/dhparams-#{node['proxy']['ext_domain']}.pem"
+  source "file:///var/www/#{node['application']}/ssl/dhparams-#{node['proxy']['ext_domain']}.pem"
   owner 'root'
   group 'root'
   mode '0644'
@@ -118,6 +125,15 @@ file "#{node['nginx']['dir']}/sites-enabled/default" do
   notifies :reload, 'service[nginx]'
 end
 
+# enable CORS
+cookbook_file "#{node['nginx']['dir']}/conf.d/cors.conf"do
+  source 'cors.conf'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
 # setup endpoint for health checks
 template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
@@ -139,6 +155,15 @@ else
   dir = "sites-enabled"
 end
 
+# write file for common proxy settings
+cookbook_file "#{node['nginx']['dir']}/proxy"do
+  source 'proxy'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
 template "#{node['nginx']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   source "server.conf.erb"
   owner 'root'
@@ -155,8 +180,28 @@ end
 
 # allow more specific configurations for specific subdomains, e.g. enable http
 # or use a specific port internally
+
 node['proxy']['subdomains'].each do |subdomain|
-  if subdomain['allow_http']
+  if subdomain['subdomain'] == "search"
+    backend = subdomain['backend'] || "#{subdomain['int_subdomain']}.#{subdomain['int_domain']}:#{subdomain['port'] || 80}"
+
+    template "#{node['nginx']['dir']}/#{dir}/search.conf" do
+      source "search.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain']
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend'],
+        search_backend: subdomain['search_backend']
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  elsif subdomain['allow_http']
+    backend = subdomain['backend'] || "#{subdomain['int_subdomain']}.#{subdomain['int_domain']}:#{subdomain['port'] || 80}"
+
     template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}_http.conf" do
       source "server_http.conf.erb"
       owner 'root'
@@ -166,28 +211,28 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        int_domain: node['proxy']['int_domain'],
-        int_subdomain: subdomain['int_subdomain'],
-        int_port: subdomain['port'] || 80
+        backend: backend
       )
       notifies :reload, 'service[nginx]'
     end
   end
 
-  template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
-    source "server_https.conf.erb"
-    owner 'root'
-    group 'root'
-    mode '0644'
-    cookbook 'proxy'
-    variables(
-      subdomain: subdomain['subdomain'],
-      domain: node['proxy']['ext_domain'],
-      int_domain: node['proxy']['int_domain'],
-      int_subdomain: subdomain['int_subdomain'],
-      int_port: subdomain['port'] || 80
-    )
-    notifies :reload, 'service[nginx]'
+  if subdomain['subdomain'] != "search"
+    backend = subdomain['backend'] || "#{subdomain['int_subdomain']}.#{subdomain['int_domain']}:#{subdomain['port'] || 80}"
+
+    template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+      source "server_https.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        backend: backend
+      )
+      notifies :reload, 'service[nginx]'
+    end
   end
 end
 

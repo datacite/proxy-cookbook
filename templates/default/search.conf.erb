@@ -1,0 +1,55 @@
+# allow traffic via http
+server {
+    server_name <%= @subdomain %>.<%= @domain %>;
+    listen 80;
+    listen 443 ssl;
+    set $backend <%= @backend %>;
+
+    # use different search frontend
+    # specify paths to not interfere with existing paths
+
+    location = / {
+        include /etc/nginx/proxy;
+    }
+
+    location /works {
+        include /etc/nginx/proxy;
+    }
+    location /contributors {
+        include /etc/nginx/proxy;
+    }
+    location /data-centers {
+        include /etc/nginx/proxy;
+    }
+    location /members {
+        include /etc/nginx/proxy;
+    }
+    location /sources {
+        include /etc/nginx/proxy;
+    }
+    location /citation {
+        include /etc/nginx/proxy;
+    }
+    location /auth {
+        include /etc/nginx/proxy;
+    }
+    location /orcid {
+        include /etc/nginx/proxy;
+    }
+    location /javascripts {
+        include /etc/nginx/proxy;
+    }
+    location /heartbeat {
+        include /etc/nginx/proxy;
+    }
+
+    location / {
+        set $backend <%= @search_backend %>;
+
+        include /etc/nginx/proxy;
+    }
+
+    location /probe {
+        deny all;
+    }
+}

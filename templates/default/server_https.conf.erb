@@ -2,13 +2,9 @@
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 443;
-    set $backend <%= @int_subdomain %>.<%= @int_domain %>:<%= @int_port %>;
+    set $backend <%= @backend %>;
 
     location / {
-        proxy_pass http://$backend;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-FORWARDED-PROTO $scheme;
+        include /etc/nginx/proxy;
     }
 }
