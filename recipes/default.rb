@@ -14,14 +14,14 @@ apt_repository "nginx" do
 end
 
 # add repo for librato-collectd
-apt_repository "librato-collectd" do
-  uri          "https://packagecloud.io/librato/librato-collectd/ubuntu/"
-  distribution node['lsb']['codename']
-  components   ["main"]
-  key          "https://packagecloud.io/gpg.key"
-  action       :add
-  notifies     :run, "execute[apt-get update]"
-end
+# apt_repository "librato-collectd" do
+#   uri          "https://packagecloud.io/librato/librato-collectd/ubuntu/"
+#   distribution node['lsb']['codename']
+#   components   ["main"]
+#   key          "https://packagecloud.io/gpg.key"
+#   action       :add
+#   notifies     :run, "execute[apt-get update]"
+# end
 
 # install required libraries
 node['ruby']['packages'].each do |pkg|
@@ -62,14 +62,14 @@ template 'nginx.conf' do
 end
 
 # librato collectd configuration
-template 'librato.conf' do
-  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
-  source 'librato.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  cookbook 'proxy'
-end
+# template 'librato.conf' do
+#   path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
+#   source 'librato.conf.erb'
+#   owner  'root'
+#   group  'root'
+#   mode   '0644'
+#   cookbook 'proxy'
+# end
 
 remote_file "Copy #{node['proxy']['ext_domain']} certificate" do
   path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
