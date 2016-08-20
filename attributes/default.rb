@@ -10,7 +10,7 @@ default['ruby']['deploy_group'] = "vagrant"
 default['ruby']['rails_env'] = "development"
 default['ruby']['enable_capistrano'] = false
 
-default['ruby']['packages'] = %w{ curl git mysql-client-5.6 python-software-properties software-properties-common zlib1g-dev nfs-common }
+default['ruby']['packages'] = %w{ curl git python-software-properties software-properties-common zlib1g-dev nfs-common }
 
 default["application"] = "proxy"
 
