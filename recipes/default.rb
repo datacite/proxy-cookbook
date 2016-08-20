@@ -56,7 +56,7 @@ template 'nginx.conf' do
   mode   '0644'
   cookbook 'proxy'
   variables(
-    :rsyslog_server => node['nginx']['rsyslog_server']
+    rsyslog_server: node['nginx']['rsyslog_server']
   )
   notifies :reload, 'service[nginx]'
 end
@@ -191,7 +191,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
-        subdomain: subdomain['subdomain']
+        subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
         search_backend: subdomain['search_backend']
