@@ -3,13 +3,13 @@ server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
     listen 443 ssl;
-    set $backend <%= @backend %>;
+    set $backend http://<%= @backend %>;
 
     # use different search frontend
     # specify paths to not interfere with existing paths
 
     location = / {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -21,7 +21,7 @@ server {
     }
 
     location /works {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -32,7 +32,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /contributors {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -43,7 +43,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /data-centers {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -54,7 +54,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /members {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -65,7 +65,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /sources {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -76,7 +76,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /citation {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -87,7 +87,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /auth {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -98,7 +98,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /orcid {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -109,7 +109,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /javascripts {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -120,7 +120,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /heartbeat {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -132,9 +132,9 @@ server {
     }
 
     location / {
-        set $backend <%= @search_backend %>$request_uri;
+        set $backend http://<%= @search_backend %>$request_uri;
 
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -154,10 +154,10 @@ server {
     server_name oai.datacite.org;
     listen 80;
     listen 443 ssl;
-    set $backend search.ec2.datacite.org:8080/oai/$request_uri;
+    set $backend http://search.ec2.datacite.org:8080/oai/$request_uri;
 
     location / {
-        proxy_pass http://$backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

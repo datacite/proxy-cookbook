@@ -199,7 +199,7 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   elsif subdomain['allow_http']
-    template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}_http.conf" do
+    template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_http.conf.erb"
       owner 'root'
       group 'root'
@@ -212,9 +212,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  end
-
-  if subdomain['subdomain'] != "search"
+  else
     template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_https.conf.erb"
       owner 'root'
