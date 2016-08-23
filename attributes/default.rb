@@ -1,6 +1,7 @@
 default['nginx']['user'] = 'www-data'
 default['nginx']['dir'] = '/etc/nginx'
 default['nginx']['log_dir'] = '/var/log/nginx'
+default['nginx']['proxy_cache_dir'] = '/tmp'
 default['nginx']['worker_processes'] = 1
 default['nginx']['worker_connections'] = 1024
 default['nginx']['rsyslog_server'] = '127.0.0.1'

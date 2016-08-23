@@ -120,6 +120,17 @@ template 'ssl.conf' do
   notifies :reload, 'service[nginx]'
 end
 
+# configure proxy cache
+template 'proxy_cache.conf' do
+  path   "#{node['nginx']['dir']}/conf.d/proxy_cache.conf"
+  source 'proxy_cache.conf.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  cookbook 'proxy'
+  notifies :reload, 'service[nginx]'
+end
+
 # delete default configuration
 file "#{node['nginx']['dir']}/sites-enabled/default" do
   action :delete
@@ -186,6 +197,21 @@ node['proxy']['subdomains'].each do |subdomain|
   if subdomain['subdomain'] == "search"
     template "#{node['nginx']['dir']}/#{dir}/search.conf" do
       source "search.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend'],
+        search_backend: subdomain['search_backend']
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  elsif subdomain['subdomain'] == "stats"
+    template "#{node['nginx']['dir']}/#{dir}/stats.conf" do
+      source "stats.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
