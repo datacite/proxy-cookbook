@@ -209,9 +209,9 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'] == "stats"
-    template "#{node['nginx']['dir']}/#{dir}/stats.conf" do
-      source "stats.conf.erb"
+  elsif subdomain['subdomain'] == "data"
+    template "#{node['nginx']['dir']}/#{dir}/data.conf" do
+      source "data.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
