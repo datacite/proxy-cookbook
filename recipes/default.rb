@@ -224,6 +224,20 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
+  elsif subdomain['subdomain'].match('crosscite')
+    template "#{node['nginx']['dir']}/#{dir}/crosscite.conf" do
+      source "crosscite.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],,
+        backend: subdomain['backend'],
+        search_backend: subdomain['search_backend']
+      )
+      notifies :reload, 'service[nginx]'
+    end
   elsif subdomain['allow_http']
     template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_http.conf.erb"
