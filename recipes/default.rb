@@ -232,7 +232,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
-        subdomain: subdomain['subdomain'],,
+        subdomain: subdomain['subdomain'],
         backend: subdomain['backend'],
         search_backend: subdomain['search_backend']
       )
