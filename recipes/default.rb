@@ -224,17 +224,17 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'].match('crosscite')
-    template "#{node['nginx']['dir']}/#{dir}/crosscite.conf" do
-      source "crosscite.conf.erb"
+  elsif subdomain['subdomain'].match('citeproc')
+    template "#{node['nginx']['dir']}/#{dir}/citeproc.conf" do
+      source "citeproc.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
       cookbook 'proxy'
       variables(
         subdomain: subdomain['subdomain'],
-        backend: subdomain['backend'],
-        search_backend: subdomain['search_backend']
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend']
       )
       notifies :reload, 'service[nginx]'
     end
