@@ -137,15 +137,6 @@ file "#{node['nginx']['dir']}/sites-enabled/default" do
   notifies :reload, 'service[nginx]'
 end
 
-# enable CORS
-cookbook_file "#{node['nginx']['dir']}/conf.d/cors.conf"do
-  source 'cors.conf'
-  owner 'root'
-  group 'root'
-  mode '0644'
-  action :create
-end
-
 # setup endpoint for health checks
 template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
@@ -165,6 +156,15 @@ if node['ruby']['rails_env'] == "development"
   dir = "sites-available"
 else
   dir = "sites-enabled"
+end
+
+# write file for common cors settings
+cookbook_file "#{node['nginx']['dir']}/cors"do
+  source 'cors'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
 end
 
 # write file for common proxy settings

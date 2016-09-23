@@ -6,6 +6,9 @@ server {
     set $backend http://<%= @backend %>;
 
     location / {
+        include /etc/nginx/cors;
+        include /etc/nginx/proxy;
+
         proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
