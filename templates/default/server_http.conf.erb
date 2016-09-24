@@ -16,7 +16,5 @@ server {
         proxy_set_header X-Forwarded-Host $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-Proto $scheme;
-
-        include /etc/nginx/proxy;
     }
 }

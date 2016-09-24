@@ -1,7 +1,8 @@
 # enable CORS
+more_set_headers 'Access-Control-Allow-Origin: *';
+more_set_headers 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+
 if ($request_method = 'OPTIONS') {
-    more_set_headers 'Access-Control-Allow-Origin' '*';
-    more_set_headers 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
     #
     # Custom headers and headers various browsers *should* be OK with but aren't
     #
