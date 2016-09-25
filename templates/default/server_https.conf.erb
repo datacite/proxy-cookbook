@@ -4,8 +4,6 @@ server {
     listen 443 ssl;
     set $backend http://<%= @backend %>;
 
-    include /etc/nginx/cors;
-
     location / {
         proxy_pass $backend;
         proxy_set_header Host $host;
@@ -16,5 +14,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/cors;
     }
 }
