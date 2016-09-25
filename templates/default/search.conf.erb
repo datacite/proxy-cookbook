@@ -5,6 +5,8 @@ server {
     listen 443 ssl;
     set $backend http://<%= @backend %>;
 
+    include /etc/nginx/cors;
+
     # use different search frontend
     # specify paths to not interfere with existing paths
 
@@ -132,9 +134,6 @@ server {
     }
 
     location / {
-        include /etc/nginx/cors;
-        include /etc/nginx/proxy;
-
         set $backend http://<%= @search_backend %>$request_uri;
 
         proxy_pass $backend;
@@ -144,6 +143,8 @@ server {
         proxy_set_header X-Forwarded-Host $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-Proto $scheme;
+
+        include /etc/nginx/proxy;
     }
 
     location /probe {

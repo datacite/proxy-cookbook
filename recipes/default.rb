@@ -209,6 +209,20 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
+  elsif subdomain['subdomain'] == "profiles"
+    template "#{node['nginx']['dir']}/#{dir}/profiles.conf" do
+      source "profiles.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend']
+      )
+      notifies :reload, 'service[nginx]'
+    end
   elsif subdomain['subdomain'] == "data"
     template "#{node['nginx']['dir']}/#{dir}/data.conf" do
       source "data.conf.erb"

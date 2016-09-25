@@ -1,10 +1,8 @@
+# allow internal ports other than 80 for some subdomains
 server {
-    server_name ~^(?<subdomain>.+)<%= "\.#{@regex_domain}" %>$;
-
+    server_name <%= @subdomain %>.<%= @domain %>;
     listen 443 ssl;
-    set $backend http://$subdomain.<%= @int_domain %>;
-
-    include /etc/nginx/cors;
+    set $backend http://<%= @backend %>;
 
     location / {
         proxy_pass $backend;
