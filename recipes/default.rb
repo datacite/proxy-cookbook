@@ -246,8 +246,6 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
-        subdomain: subdomain['subdomain'],
-        domain: node['proxy']['ext_domain'],
         backend: subdomain['backend']
       )
       notifies :reload, 'service[nginx]'

@@ -1,8 +1,16 @@
 # allow traffic via http
 server {
-    server_name <%= @subdomain %>.<%= @domain %>;
+    server_name crosscite.org;
     listen 80;
     set $backend http://<%= @backend %>;
+
+    if ( $request_filename ~ citeproc/.+ ) {
+        rewrite ^(.*) http://crosscite.org/$1 permanent;
+    }
+
+    if ( $request_filename ~ cn/ ) {
+        rewrite ^ http://crosscite.org/docs.html permanent;
+    }
 
     location / {
         proxy_pass $backend;
