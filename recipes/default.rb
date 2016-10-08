@@ -238,9 +238,9 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'].match('citeproc')
-    template "#{node['nginx']['dir']}/#{dir}/citeproc.conf" do
-      source "citeproc.conf.erb"
+  elsif subdomain['subdomain'].match('citation')
+    template "#{node['nginx']['dir']}/#{dir}/citation.conf" do
+      source "citation.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'

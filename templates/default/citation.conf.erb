@@ -1,15 +1,15 @@
 # allow traffic via http
 server {
-    server_name crosscite.org;
+    server_name crosscite.org citation.crosscite.org;
     listen 80;
     set $backend http://<%= @backend %>;
 
     if ( $request_filename ~ citeproc/.+ ) {
-        rewrite ^(.*) http://crosscite.org/$1 permanent;
+        rewrite ^(.*) http://citation.crosscite.org/$1 permanent;
     }
 
     if ( $request_filename ~ cn/ ) {
-        rewrite ^ http://crosscite.org/docs.html permanent;
+        rewrite ^ http://citation.crosscite.org/docs.html permanent;
     }
 
     location / {
