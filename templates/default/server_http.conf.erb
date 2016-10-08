@@ -2,7 +2,7 @@
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
-    listen 443 ssl;
+    listen 443 ssl http2;
     set $backend http://<%= @backend %>;
 
     location / {

@@ -29,7 +29,7 @@ server {
 server {
     server_name citation.datacite.org;
     listen 80;
-    listen 443 ssl;
+    listen 443 ssl http2;
     set $backend http://<%= @backend %>;
 
     location / {

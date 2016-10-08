@@ -2,7 +2,7 @@
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
-    listen 443 ssl;
+    listen 443 ssl http2;
     set $backend http://<%= @backend %>;
 
     # use different search frontend
@@ -154,7 +154,7 @@ server {
 server {
     server_name oai.datacite.org;
     listen 80;
-    listen 443 ssl;
+    listen 443 ssl http2;
     set $backend http://search.ec2.datacite.org:8080/oai/$request_uri;
 
     location / {
