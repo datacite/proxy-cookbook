@@ -30,8 +30,8 @@ node['ruby']['packages'].each do |pkg|
   end
 end
 
-# install nginx and collectd
-%w{ nginx-full nginx-extras collectd }.each do |pkg|
+# install nginx
+%w{ nginx-full nginx-extras }.each do |pkg|
   package pkg do
     options "-y --force-yes"
     action :install
@@ -62,14 +62,12 @@ template 'nginx.conf' do
 end
 
 # librato collectd configuration
-%w[ /opt /opt/collectd /opt/collectd/etc /opt/collectd/etc/collectd.conf.d ].each do |path|
-  directory '/opt/collectd/etc/collectd.conf.d' do
-    owner 'root'
-    group 'root'
-    mode '0755'
-    recursive true
-    action :create
-  end
+directory '/opt/collectd/etc/collectd.conf.d' do
+  owner 'root'
+  group 'root'
+  mode '0755'
+  recursive true
+  action :create
 end
 
 template 'librato.conf' do
