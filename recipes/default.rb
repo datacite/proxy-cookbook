@@ -61,7 +61,7 @@ template 'nginx.conf' do
   notifies :reload, 'service[nginx]'
 end
 
-librato collectd configuration
+# librato collectd configuration
 template 'librato.conf' do
   path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
   source 'librato.conf.erb'
