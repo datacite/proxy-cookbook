@@ -1,29 +1,16 @@
 # allow traffic via http
 server {
-    server_name crosscite.org;
-    listen 80;
-
-    location = /citeproc/format {
-        return 301 http://citation.crosscite.org/format?$query_string;
-    }
-
-    location = /citeproc {
-        return 301 http://citation.crosscite.org;
-    }
-
-    location = /cn {
-        return 301 http://citation.crosscite.org/docs.html;
-    }
-
-    location / {
-        return 301 http://citation.crosscite.org$request_uri;
-    }
-}
-
-server {
     server_name citation.crosscite.org;
     listen 80;
     set $backend http://<%= @backend %>;
+
+    location /citeproc {
+        rewrite ^/citeproc/(.*)$ /$1 permanent;
+    }
+
+    location /cn {
+        return 301 http://citation.crosscite.org/docs.html;
+    }
 
     location / {
         proxy_pass $backend;
