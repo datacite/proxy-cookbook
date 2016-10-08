@@ -62,6 +62,16 @@ template 'nginx.conf' do
 end
 
 # librato collectd configuration
+%w[ /opt /opt/collectd /opt/collectd/etc /opt/collectd/etc/collectd.conf.d ].each do |path|
+  directory '/opt/collectd/etc/collectd.conf.d' do
+    owner 'root'
+    group 'root'
+    mode '0755'
+    recursive true
+    action :create
+  end
+end
+
 template 'librato.conf' do
   path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
   source 'librato.conf.erb'
