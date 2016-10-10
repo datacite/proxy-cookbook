@@ -1,7 +1,7 @@
 server {
     server_name ~^(?<subdomain>.+)<%= "\.#{@regex_domain}" %>$;
 
-    listen 443 ssl http2;
+    listen 443 ssl;
     set $backend http://$subdomain.<%= @int_domain %>;
 
     location / {

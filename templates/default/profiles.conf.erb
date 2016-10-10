@@ -1,7 +1,7 @@
 # allow internal ports other than 80 for some subdomains
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
-    listen 443 ssl http2;
+    listen 443 ssl;
     set $backend http://<%= @backend %>;
 
     location / {
