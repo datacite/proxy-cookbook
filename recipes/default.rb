@@ -30,8 +30,8 @@ node['ruby']['packages'].each do |pkg|
   end
 end
 
-# install nginx
-%w{ nginx-full nginx-extras }.each do |pkg|
+# install nginx and collectd
+%w{ nginx-full nginx-extras collectd }.each do |pkg|
   package pkg do
     options "-y --force-yes"
     action :install
