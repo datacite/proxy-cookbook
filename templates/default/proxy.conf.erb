@@ -3,11 +3,6 @@ server {
     server_name ~^(?<subdomain>.+)<%= "\.#{@domain}" %>$;
     listen 80 default_server;
 
-    # block pingdom
-    if ($http_user_agent ~* Pingdom.com_bot) {
-        return 403;
-    }
-
     location / {
         return 301 https://$subdomain.<%= @domain %>$request_uri;
     }

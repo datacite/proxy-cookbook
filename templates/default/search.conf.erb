@@ -5,6 +5,11 @@ server {
     listen 443 ssl;
     set $backend http://<%= @backend %>;
 
+    # block pingdom
+    if ($http_user_agent ~* Pingdom.com_bot) {
+        return 403;
+    }
+
     # use different search frontend
     # specify paths to not interfere with existing paths
 
