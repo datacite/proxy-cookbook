@@ -43,6 +43,10 @@ execute "apt-get install --only-upgrade libssl1.0.0" do
   action :run
 end
 
+if ENV['RSYSLOG_HOST']
+  node.override['nginx']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
+end
+
 # nginx configuration
 template 'nginx.conf' do
   path   "#{node['nginx']['dir']}/nginx.conf"
@@ -290,7 +294,7 @@ capistrano node["application"] do
   user            ENV['DEPLOY_USER']
   group           ENV['DEPLOY_GROUP']
   rails_env       ENV['RAILS_ENV']
-  action          [:consul_install, :restart]
+  action          [:consul_install, :rsyslog_config, :restart]
 end
 
 service 'nginx' do
