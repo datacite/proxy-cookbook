@@ -1,16 +1,8 @@
 include_recipe "apt"
+include_recipe "openresty"
 
 execute "apt-get update" do
   action :run
-end
-
-# add PPA for Nginx mainline
-apt_repository "nginx" do
-  uri          "ppa:nginx/development"
-  distribution node['lsb']['codename']
-  components   ["main"]
-  action       :add
-  notifies     :run, "execute[apt-get update]"
 end
 
 # # add repo for librato-collectd
@@ -30,33 +22,28 @@ node['ruby']['packages'].each do |pkg|
   end
 end
 
-# install nginx and collectd
-%w{ nginx-extras collectd }.each do |pkg|
+# install collectd
+%w{ collectd }.each do |pkg|
   package pkg do
     options "-y --force-yes"
     action :install
   end
 end
 
-# install SSL fix
-execute "apt-get install --only-upgrade libssl1.0.0" do
-  action :run
-end
-
 if ENV['RSYSLOG_HOST']
-  node.override['nginx']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
+  node.override['openresty']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
 end
 
 # nginx configuration
 template 'nginx.conf' do
-  path   "#{node['nginx']['dir']}/nginx.conf"
+  path   "#{node['openresty']['dir']}/nginx.conf"
   source 'nginx.conf.erb'
   owner  'root'
   group  'root'
   mode   '0644'
   cookbook 'proxy'
   variables(
-    rsyslog_server: node['nginx']['rsyslog_server']
+    rsyslog_server: node['openresty']['rsyslog_server']
   )
   notifies :reload, 'service[nginx]'
 end
@@ -113,7 +100,7 @@ end
 cert = ssl_certificate node['proxy']['ext_domain']
 
 template 'ssl.conf' do
-  path   "#{node['nginx']['dir']}/conf.d/ssl.conf"
+  path   "#{node['openresty']['dir']}/conf.d/ssl.conf"
   source 'ssl.conf.erb'
   owner  'root'
   group  'root'
@@ -130,7 +117,7 @@ end
 
 # configure proxy cache
 template 'proxy_cache.conf' do
-  path   "#{node['nginx']['dir']}/conf.d/proxy_cache.conf"
+  path   "#{node['openresty']['dir']}/conf.d/proxy_cache.conf"
   source 'proxy_cache.conf.erb'
   owner  'root'
   group  'root'
@@ -140,13 +127,13 @@ template 'proxy_cache.conf' do
 end
 
 # delete default configuration
-file "#{node['nginx']['dir']}/sites-enabled/default" do
+file "#{node['openresty']['dir']}/sites-enabled/default" do
   action :delete
   notifies :reload, 'service[nginx]'
 end
 
 # setup endpoint for health checks
-template "#{node['nginx']['dir']}/sites-enabled/proxy.conf" do
+template "#{node['openresty']['dir']}/sites-enabled/proxy.conf" do
   source "proxy.conf.erb"
   owner 'root'
   group 'root'
@@ -167,7 +154,7 @@ else
 end
 
 # write file for common cors settings
-cookbook_file "#{node['nginx']['dir']}/cors"do
+cookbook_file "#{node['openresty']['dir']}/cors"do
   source 'cors'
   owner 'root'
   group 'root'
@@ -176,7 +163,7 @@ cookbook_file "#{node['nginx']['dir']}/cors"do
 end
 
 # write file for common proxy settings
-cookbook_file "#{node['nginx']['dir']}/proxy"do
+cookbook_file "#{node['openresty']['dir']}/proxy"do
   source 'proxy'
   owner 'root'
   group 'root'
@@ -184,7 +171,7 @@ cookbook_file "#{node['nginx']['dir']}/proxy"do
   action :create
 end
 
-template "#{node['nginx']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
+template "#{node['openresty']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   source "server.conf.erb"
   owner 'root'
   group 'root'
@@ -203,7 +190,7 @@ end
 
 node['proxy']['subdomains'].each do |subdomain|
   if subdomain['subdomain'] == "search"
-    template "#{node['nginx']['dir']}/#{dir}/search.conf" do
+    template "#{node['openresty']['dir']}/#{dir}/search.conf" do
       source "search.conf.erb"
       owner 'root'
       group 'root'
@@ -218,7 +205,7 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   elsif subdomain['subdomain'] == "profiles"
-    template "#{node['nginx']['dir']}/#{dir}/profiles.conf" do
+    template "#{node['openresty']['dir']}/#{dir}/profiles.conf" do
       source "profiles.conf.erb"
       owner 'root'
       group 'root'
@@ -232,7 +219,7 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   elsif subdomain['subdomain'] == "data"
-    template "#{node['nginx']['dir']}/#{dir}/data.conf" do
+    template "#{node['openresty']['dir']}/#{dir}/data.conf" do
       source "data.conf.erb"
       owner 'root'
       group 'root'
@@ -247,7 +234,7 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   elsif subdomain['subdomain'].match('citation')
-    template "#{node['nginx']['dir']}/#{dir}/citation.conf" do
+    template "#{node['openresty']['dir']}/#{dir}/citation.conf" do
       source "citation.conf.erb"
       owner 'root'
       group 'root'
@@ -259,7 +246,7 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   elsif subdomain['allow_http']
-    template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_http.conf.erb"
       owner 'root'
       group 'root'
@@ -273,7 +260,7 @@ node['proxy']['subdomains'].each do |subdomain|
       notifies :reload, 'service[nginx]'
     end
   else
-    template "#{node['nginx']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_https.conf.erb"
       owner 'root'
       group 'root'
