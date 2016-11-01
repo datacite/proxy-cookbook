@@ -1,6 +1,3 @@
-# load_module /usr/lib/nginx/modules/ngx_http_echo_module.so;
-# load_module /usr/lib/nginx/modules/ngx_http_headers_more_filter_module.so;
-
 env PATH;
 user <%= node['openresty']['user'] %>;
 worker_processes <%= node['openresty']['worker_processes'] %>;
