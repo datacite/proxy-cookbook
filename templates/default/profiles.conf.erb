@@ -14,5 +14,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 }

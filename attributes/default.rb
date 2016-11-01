@@ -3,6 +3,7 @@ default['openresty']['dir'] = '/etc/nginx'
 default['openresty']['log_dir'] = '/var/log/nginx'
 default['openresty']['cache_dir'] = '/var/cache/nginx'
 default['openresty']['rsyslog_server'] = '127.0.0.1'
+default['openresty']['status']['url'] = '/basic_status'
 
 default['ruby']['deploy_user'] = "vagrant"
 default['ruby']['deploy_group'] = "vagrant"

@@ -23,6 +23,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 
     location /works {
@@ -35,6 +36,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /contributors {
         proxy_pass $backend;
@@ -46,6 +48,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /data-centers {
         proxy_pass $backend;
@@ -57,6 +60,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /members {
         proxy_pass $backend;
@@ -68,6 +72,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /sources {
         proxy_pass $backend;
@@ -79,6 +84,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /citation {
         proxy_pass $backend;
@@ -90,6 +96,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /auth {
         proxy_pass $backend;
@@ -101,6 +108,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /orcid {
         proxy_pass $backend;
@@ -112,6 +120,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /javascripts {
         proxy_pass $backend;
@@ -123,6 +132,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /heartbeat {
         proxy_pass $backend;
@@ -134,6 +144,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 
     location / {
@@ -149,6 +160,7 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 
     location /probe {
@@ -172,5 +184,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 }
