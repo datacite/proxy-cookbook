@@ -18,18 +18,14 @@ server {
     rewrite ^(.+)/+$ $1 permanent;
 
     location = /status {
-        default_type text/html;
-        echo "OK";
+        default_type 'text/plain';
+
+        content_by_lua_block {
+            ngx.say('OK')
+        }
     }
 
     location / {
       return 301 https://$host/status;
-    }
-
-    location /basic_status {
-        stub_status on;
-        access_log off;
-        allow 127.0.0.1;
-        deny all;
     }
 }
