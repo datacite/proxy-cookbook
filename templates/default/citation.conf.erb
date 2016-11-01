@@ -12,6 +12,9 @@ server {
         return 301 http://citation.crosscite.org/docs.html;
     }
 
+    # /basic_status
+    include /etc/nginx/conf.d/nginx_status.conf.inc;
+
     location / {
         proxy_pass $backend;
         proxy_set_header Host $host;
@@ -23,7 +26,6 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 }
 
@@ -33,6 +35,9 @@ server {
     listen 443 ssl;
     set $backend http://<%= @backend %>;
 
+    # /basic_status
+    include /etc/nginx/conf.d/nginx_status.conf.inc;
+
     location / {
         proxy_pass $backend;
         proxy_set_header Host $host;
@@ -44,6 +49,5 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 }

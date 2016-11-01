@@ -10,6 +10,9 @@ server {
         return 403;
     }
 
+    # /basic_status
+    include /etc/nginx/conf.d/nginx_status.conf.inc;
+
     # use different search frontend
     # specify paths to not interfere with existing paths
 
@@ -23,7 +26,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 
     location /works {
@@ -36,7 +38,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /contributors {
         proxy_pass $backend;
@@ -48,7 +49,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /data-centers {
         proxy_pass $backend;
@@ -60,7 +60,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /members {
         proxy_pass $backend;
@@ -72,7 +71,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /sources {
         proxy_pass $backend;
@@ -84,7 +82,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /citation {
         proxy_pass $backend;
@@ -96,7 +93,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /auth {
         proxy_pass $backend;
@@ -108,7 +104,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /orcid {
         proxy_pass $backend;
@@ -120,7 +115,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /javascripts {
         proxy_pass $backend;
@@ -132,7 +126,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
     location /heartbeat {
         proxy_pass $backend;
@@ -144,7 +137,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 
     location / {
@@ -160,7 +152,6 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 
     location /probe {
@@ -174,6 +165,9 @@ server {
     listen 443 ssl;
     set $backend http://search.ec2.datacite.org:8080/oai/$request_uri;
 
+    # /basic_status
+    include /etc/nginx/conf.d/nginx_status.conf.inc;
+
     location / {
         proxy_pass $backend;
         proxy_set_header Host $host;
@@ -184,6 +178,5 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
-        include /etc/nginx/conf.d/nginx_status.conf.inc;
     }
 }

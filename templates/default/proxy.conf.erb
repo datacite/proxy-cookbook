@@ -17,6 +17,9 @@ server {
 
     rewrite ^(.+)/+$ $1 permanent;
 
+    # /basic_status
+    include /etc/nginx/conf.d/nginx_status.conf.inc;
+
     location = /status {
         default_type 'text/plain';
 
