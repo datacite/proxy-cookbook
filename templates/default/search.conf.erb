@@ -158,25 +158,3 @@ server {
         deny all;
     }
 }
-
-server {
-    server_name oai.datacite.org;
-    listen 80;
-    listen 443 ssl;
-    set $backend http://search.ec2.datacite.org:8080/oai/$request_uri;
-
-    # /basic_status
-    include /etc/nginx/conf.d/nginx_status.conf.inc;
-
-    location / {
-        proxy_pass $backend;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Host $host;
-        proxy_set_header X-Forwarded-Server $host;
-        proxy_set_header X-Forwarded-Proto $scheme;
-
-        include /etc/nginx/proxy;
-    }
-}
