@@ -171,6 +171,15 @@ cookbook_file "#{node['openresty']['dir']}/proxy"do
   action :create
 end
 
+# write file for test banner
+cookbook_file "#{node['openresty']['dir']}/test-banner"do
+  source 'test-banner'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
 template "#{node['openresty']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   source "server.conf.erb"
   owner 'root'
