@@ -1,10 +1,8 @@
 sub_filter </head>
   "<link rel='stylesheet' type='text/css' href='//assets.datacite.org/stylesheets/banner.css' />
-   <script type='text/javascript' src='//assets.datacite.org/javascripts/banner-jquery.js'></script>
    <script type='text/javascript' src='//assets.datacite.org/javascripts/banner.js'></script></head>";
 
 sub_filter_once on;
-#sub_filter_types text/html;
 
-# disabling gzip by backend required for injecting test-banner
+# disabling gzip by backend required for injecting banner
 proxy_set_header Accept-Encoding "";
