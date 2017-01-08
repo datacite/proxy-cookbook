@@ -180,6 +180,13 @@ cookbook_file "#{node['openresty']['dir']}/test-banner"do
   action :create
 end
 
+# load test banner for test subdomain
+if node['proxy']['ext_domain'] == "test.datacite.org"
+  test_string =  "include /etc/nginx/test-banner;"
+else
+  test_string = ""
+end
+
 template "#{node['openresty']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf" do
   source "server.conf.erb"
   owner 'root'
@@ -189,14 +196,14 @@ template "#{node['openresty']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf
   variables(
     domain: node['proxy']['ext_domain'],
     regex_domain: node['proxy']['ext_domain'].gsub(/\./, "\."),
-    int_domain: node['proxy']['int_domain']
+    int_domain: node['proxy']['int_domain'],
+    test_string: test_string
   )
   notifies :reload, 'service[nginx]'
 end
 
 # allow more specific configurations for specific subdomains, e.g. enable http
 # or use a specific port internally
-
 node['proxy']['subdomains'].each do |subdomain|
   if subdomain['subdomain'] == "search"
     template "#{node['openresty']['dir']}/#{dir}/search.conf" do
@@ -209,7 +216,8 @@ node['proxy']['subdomains'].each do |subdomain|
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
-        search_backend: subdomain['search_backend']
+        search_backend: subdomain['search_backend'],
+        test_string: test_string
       )
       notifies :reload, 'service[nginx]'
     end
@@ -223,21 +231,8 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: subdomain['backend']
-      )
-      notifies :reload, 'service[nginx]'
-    end
-  elsif subdomain['subdomain'] == "mds-sandbox"
-    template "#{node['openresty']['dir']}/#{dir}/mds-sandbox.conf" do
-      source "mds-sandbox.conf.erb"
-      owner 'root'
-      group 'root'
-      mode '0644'
-      cookbook 'proxy'
-      variables(
-        subdomain: subdomain['subdomain'],
-        domain: node['proxy']['ext_domain'],
-        backend: subdomain['backend']
+        backend: subdomain['backend'],
+        test_string: test_string
       )
       notifies :reload, 'service[nginx]'
     end
@@ -252,7 +247,8 @@ node['proxy']['subdomains'].each do |subdomain|
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
-        search_backend: subdomain['search_backend']
+        search_backend: subdomain['search_backend'],
+        test_string: test_string
       )
       notifies :reload, 'service[nginx]'
     end
@@ -278,7 +274,8 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: subdomain['backend']
+        backend: subdomain['backend'],
+        test_string: test_string
       )
       notifies :reload, 'service[nginx]'
     end
@@ -292,7 +289,8 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: subdomain['backend']
+        backend: subdomain['backend'],
+        test_string: test_string
       )
       notifies :reload, 'service[nginx]'
     end

@@ -26,6 +26,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
 
     location /works {
@@ -38,6 +39,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /contributors {
         proxy_pass $backend;
@@ -49,6 +51,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /data-centers {
         proxy_pass $backend;
@@ -60,6 +63,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /members {
         proxy_pass $backend;
@@ -71,6 +75,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /sources {
         proxy_pass $backend;
@@ -82,6 +87,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /citation {
         proxy_pass $backend;
@@ -93,6 +99,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /auth {
         proxy_pass $backend;
@@ -104,6 +111,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /orcid {
         proxy_pass $backend;
@@ -115,6 +123,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /javascripts {
         proxy_pass $backend;
@@ -126,6 +135,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
     location /heartbeat {
         proxy_pass $backend;
@@ -137,6 +147,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         include /etc/nginx/proxy;
+        <%= @test_string %>
     }
 
     location / {
@@ -152,6 +163,7 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
+        <%= @test_string %>
     }
 
     location /probe {

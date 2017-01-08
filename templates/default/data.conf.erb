@@ -20,6 +20,7 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
+        <%= @test_string %>
     }
 
     location / {
@@ -33,5 +34,6 @@ server {
 
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
+        <%= @test_string %>
     }
 }
