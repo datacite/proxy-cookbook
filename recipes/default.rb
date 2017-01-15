@@ -172,6 +172,15 @@ cookbook_file "#{node['openresty']['dir']}/proxy"do
 end
 
 # write file for test banner
+cookbook_file "#{node['openresty']['dir']}/jquery"do
+  source 'jquery'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
+# write file for test banner
 cookbook_file "#{node['openresty']['dir']}/test-banner"do
   source 'test-banner'
   owner 'root'
@@ -248,6 +257,22 @@ node['proxy']['subdomains'].each do |subdomain|
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
         search_backend: subdomain['search_backend'],
+        test_string: test_string
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  elsif %w(mds oai).include?(subdomain['subdomain'])
+    test_string = "include /etc/nginx/jquery;\n" + test_string
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+      source "server_https.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend'],
         test_string: test_string
       )
       notifies :reload, 'service[nginx]'
