@@ -1,6 +1,6 @@
 # allow traffic via http
 server {
-    server_name citation.crosscite.org citation.labs.crosscite.org;
+    server_name citation.crosscite.org citation.test.crosscite.org;
     listen 80;
     set $backend http://<%= @backend %>;
 
@@ -30,7 +30,7 @@ server {
 }
 
 server {
-    server_name citation.datacite.org citation.labs.datacite.org;
+    server_name citation.datacite.org citation.test.datacite.org;
     listen 80;
     listen 443 ssl;
     set $backend http://<%= @backend %>;
