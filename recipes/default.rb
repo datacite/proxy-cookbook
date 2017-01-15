@@ -261,7 +261,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif %w(mds oai).include?(subdomain['subdomain'])
+  elsif %w(mds oai handle dx).include?(subdomain['subdomain'])
     test_string = "include /etc/nginx/jquery;\n" + test_string
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "server_https.conf.erb"
