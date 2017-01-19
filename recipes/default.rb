@@ -262,8 +262,21 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: subdomain['backend'],
-        test_string: test_string
+        backend: subdomain['backend']
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  elsif subdomain['subdomain'] == "doi"
+    template "#{node['openresty']['dir']}/#{dir}/doi.conf" do
+      source "doi.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend']
       )
       notifies :reload, 'service[nginx]'
     end

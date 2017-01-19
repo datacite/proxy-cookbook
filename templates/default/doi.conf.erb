@@ -1,0 +1,10 @@
+# redirect all requests to doi proxy
+server {
+    server_name ~^(?<subdomain>.+)<%= "\.#{@domain}" %>$;
+    listen 80 default_server;
+    listen 443 default_server;
+
+    location / {
+        return 303 https://<%= @backend %>;
+    }
+}
