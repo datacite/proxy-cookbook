@@ -1,10 +1,10 @@
 # redirect all requests to doi proxy
 server {
-    server_name ~^(?<subdomain>.+)<%= "\.#{@domain}" %>$;
+    server_name doi.datacite.org datacite.org;
     listen 80;
     listen 443;
 
     location / {
-        return 303 https://<%= @backend %>;
+        return 301 https://<%= @backend %>;
     }
 }
