@@ -2,6 +2,14 @@
 server {
     server_name doi.datacite.org datacite.org;
     listen 80;
+
+    location / {
+        return 301 https://doi.datacite.org$request_uri;
+    }
+}
+
+server {
+    server_name doi.datacite.org datacite.org;
     listen 443;
 
     location / {

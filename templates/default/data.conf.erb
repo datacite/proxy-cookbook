@@ -1,7 +1,14 @@
-# allow traffic via http
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
+
+    location / {
+        return 301 https://<%= @subdomain %>.<%= @domain %>$request_uri;
+    }
+}
+
+server {
+    server_name <%= @subdomain %>.<%= @domain %>;
     listen 443 ssl;
     set $backend http://<%= @backend %>;
     set $search_backend http://<%= @search_backend %>;
