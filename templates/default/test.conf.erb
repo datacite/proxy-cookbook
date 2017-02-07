@@ -8,7 +8,7 @@ server {
     include /etc/nginx/conf.d/nginx_status.conf.inc;
 
     location /handle/ {
-        rewrite ^/handle/(.*) https://handle.test.datacite.org$request_uri permanent;
+        rewrite ^/handle/(.*) https://handle.test.datacite.org/$1 permanent;
     }
 
     location / {
