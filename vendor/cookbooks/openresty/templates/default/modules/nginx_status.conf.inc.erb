@@ -1,0 +1,13 @@
+location = <%= node['openresty']['status']['url'] %> {
+  stub_status on;
+  allow 127.0.0.1;
+  <% if node['openresty']['ipv6'] %>
+  allow ::1;
+  <% end %>
+  <% node['openresty']['status']['allowed_ips'].each do |ip| %>
+  allow <%= ip %>;
+  <% end %>
+  deny all;
+  auth_basic off;
+  access_log off;
+}

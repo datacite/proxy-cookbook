@@ -1,0 +1,5 @@
+proxy_send_timeout    120;
+proxy_read_timeout    120;
+
+proxy_buffering off;
+proxy_store     off;

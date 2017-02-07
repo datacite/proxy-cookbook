@@ -1,0 +1,8 @@
+AllCops:
+  Exclude:
+  - .kitchen
+  - vendor/**/*
+Metrics/ModuleLength:
+  Max: 209
+Metrics/MethodLength:
+  Max: 15

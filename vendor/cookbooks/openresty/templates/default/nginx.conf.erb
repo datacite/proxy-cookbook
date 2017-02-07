@@ -1,0 +1,104 @@
+user <%= node['openresty']['user'] %><% if node['openresty']['user'] != node['openresty']['group'] %> <%= node['openresty']['group'] %><% end %>;
+worker_processes  <%= node['openresty']['worker_processes'] %>;
+<% if node['openresty']['worker_auto_affinity'] && node['openresty']['worker_processes'] != 'auto' %>
+worker_cpu_affinity <%= node['openresty']['worker_cpu_affinity'] %>;
+<% end %>
+
+<% if node['openresty']['worker_rlimit_nofile'] -%>
+worker_rlimit_nofile <%= node['openresty']['worker_rlimit_nofile'] %>;
+<% end -%>
+
+error_log  <%= node['openresty']['log_dir'] %>/error.log;
+pid        <%= node['openresty']['pid'] %>;
+
+events {
+  worker_connections  <%= node['openresty']['worker_connections'] %>;
+<% if node['openresty']['multi_accept'] -%>
+  multi_accept on;
+<% end -%>
+<% if node['openresty']['event'] -%>
+  use <%= node['openresty']['event'] %>;
+<% end -%>
+}
+
+http {
+  include       <%= node['openresty']['dir'] %>/mime.types;
+  default_type  application/octet-stream;
+
+  <% unless node['openresty']['disable_access_log'] -%>
+  access_log	<%= node['openresty']['log_dir'] %>/access.log;
+  <% end %>
+
+  <% if @kernel_supports_aio %>
+  sendfile off;
+  aio on;
+  directio 512;
+  output_buffers 1 128k;
+  <% else %>
+  sendfile on;
+  <% end %>
+
+  # PCI compliance
+  server_tokens off;
+
+  tcp_nopush on;
+  tcp_nodelay on;
+
+  <% if node['openresty']['log_formats'] %>
+    <% node['openresty']['log_formats'].each do |name, string| %>
+  log_format <%= name %> '<%= string %>';
+    <% end %>
+  <% end %>
+
+  <% if node['openresty']['keepalive'] == "on" %>
+  keepalive_timeout  <%= node['openresty']['keepalive_timeout'] %>;
+  <% end %>
+
+  gzip  <%= node['openresty']['gzip'] %>;
+  <% if node['openresty']['gzip'] == "on" %>
+  gzip_http_version <%= node['openresty']['gzip_http_version'] %>;
+  gzip_comp_level <%= node['openresty']['gzip_comp_level'] %>;
+  gzip_proxied <%= node['openresty']['gzip_proxied'] %>;
+  gzip_vary <%= node['openresty']['gzip_vary'] %>;
+  <% if node['openresty']['gzip_buffers'] -%>
+  gzip_buffers <%= node['openresty']['gzip_buffers'] %>;
+  <% end -%>
+  gzip_types <%= node['openresty']['gzip_types'].join(' ') %>;
+  gzip_min_length  1000;
+  gzip_disable     "MSIE [1-6]\.";
+  <% end %>
+
+  <% if node['openresty']['resolver'] && node['openresty']['resolver_ttl'] %>
+  resolver <%= node['openresty']['resolver'] %> valid=<%= node['openresty']['resolver_ttl'] %>;
+  <% elsif node['ec2'] && node['ec2']['network_interfaces_macs'] && !(node['ec2']['network_interfaces_macs'].select{ |k,v| v.keys.include?('vpc_id') }.size > 0) %>
+  # Set the resolver for upstream proxies to the internal AWS Services offer
+  resolver 172.16.0.23 valid=10s;
+  <% end %>
+
+  open_file_cache max=<%= node['openresty']['open_file_cache']['max'] %> inactive=<%= node['openresty']['open_file_cache']['inactive'] %>;
+  open_file_cache_valid <%= node['openresty']['open_file_cache']['valid'] %>;
+  open_file_cache_min_uses <%= node['openresty']['open_file_cache']['min_uses'] %>;
+  open_file_cache_errors <%= node['openresty']['open_file_cache']['errors'] %>;
+
+  client_max_body_size <%= node['openresty']['client_max_body_size'] %>;
+  client_body_buffer_size <%= node['openresty']['client_body_buffer_size'] %>;
+  large_client_header_buffers <%= node['openresty']['large_client_header_buffers'] %>;
+
+  server_names_hash_bucket_size <%= node['openresty']['server_names_hash_bucket_size'] %>;
+  types_hash_max_size <%= node['openresty']['types_hash_max_size'] %>;
+  types_hash_bucket_size <%= node['openresty']['types_hash_bucket_size'] %>;
+
+  <% if node['openresty']['lua_package_path'] %>
+  lua_package_path <%= node['openresty']['lua_package_path'] %>;
+  <% end %>
+  <% if node['openresty']['lua_package_cpath'] %>
+  lua_package_cpath <%= node['openresty']['lua_package_cpath'] %>;
+  <% end %>
+
+  <% if node['openresty']['generate_dhparams'] %>
+  ssl_dhparam  <%= node['openresty']['dir'] %>/dhparams.pem;
+  <% end %>
+
+  include <%= node['openresty']['dir'] %>/conf.d/*.conf;
+  include <%= node['openresty']['dir'] %>/sites-enabled/*;
+}

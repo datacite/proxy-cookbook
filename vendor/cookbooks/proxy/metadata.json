@@ -1,0 +1,36 @@
+{
+  "name": "proxy",
+  "description": "Configures proxy",
+  "long_description": "Proxy Cookbook\n==============\n\nChef cookbook for installing [proxy](https://github.com/datacite/proxy) server.\n",
+  "maintainer": "Martin Fenner",
+  "maintainer_email": "mfenner@datacite.org",
+  "license": "Apache 2.0",
+  "platforms": {
+    "ubuntu": ">= 0.0.0"
+  },
+  "dependencies": {
+    "apt": ">= 0.0.0",
+    "ssl_certificate": ">= 0.0.0",
+    "openresty": "~> 0.5.4",
+    "capistrano": "~> 1.1.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "2.1.19",
+  "source_url": "",
+  "issues_url": ""
+}
