@@ -10,14 +10,14 @@ server {
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 443 ssl;
+    set $frontend http://<%= @frontend %>;
     set $backend http://<%= @backend %>;
-    set $search_backend http://<%= @search_backend %>;
 
     # /basic_status
     include /etc/nginx/conf.d/nginx_status.conf.inc;
 
     location = / {
-        proxy_pass $backend;
+        proxy_pass $frontend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -31,7 +31,7 @@ server {
     }
 
     location / {
-        proxy_pass $search_backend;
+        proxy_pass $backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

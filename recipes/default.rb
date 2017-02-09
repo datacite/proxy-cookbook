@@ -236,9 +236,9 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'] == "data"
-    template "#{node['openresty']['dir']}/#{dir}/data.conf" do
-      source "data.conf.erb"
+  elsif ["api", "data"].include? subdomain['subdomain']
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+      source "frontend.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
@@ -246,8 +246,8 @@ node['proxy']['subdomains'].each do |subdomain|
       variables(
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
-        backend: subdomain['backend'],
-        search_backend: subdomain['search_backend'],
+        frontend: subdomain['backend'],
+        backend: subdomain['search_backend'],
         test_string: test_string
       )
       notifies :reload, 'service[nginx]'
