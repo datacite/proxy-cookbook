@@ -9,7 +9,7 @@ server {
 
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
-    listen 443 ssl;
+    listen 8000;
     set $frontend http://<%= @frontend %>;
     set $backend http://<%= @backend %>;
 

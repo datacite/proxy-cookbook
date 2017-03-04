@@ -2,7 +2,7 @@
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
-    listen 443 ssl;
+    listen 8000;
     set $backend http://<%= @backend %>;
 
     # /basic_status

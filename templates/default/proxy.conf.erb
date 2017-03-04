@@ -11,7 +11,7 @@ server {
 server {
     server_name <%= "#{@hostname}.#{@domain}" %>;
 
-    listen 443 ssl default_server;
+    listen 8000 default_server;
 
     root <%= "/var/www/#{node['application']}/public" %>;
 

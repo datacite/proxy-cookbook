@@ -66,55 +66,6 @@ template 'librato.conf' do
   cookbook 'proxy'
 end
 
-remote_file "Copy #{node['proxy']['ext_domain']} certificate" do
-  path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
-  source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['ext_domain']}.crt"
-  owner 'root'
-  group 'root'
-  mode '0644'
-end
-
-remote_file "Copy #{node['proxy']['ext_domain']} key" do
-  path "/etc/ssl/private/#{node['proxy']['ext_domain']}.key"
-  source "file:///var/www/#{node['application']}/ssl/#{node['proxy']['ext_domain']}.key"
-  owner 'root'
-  group 'root'
-  mode '0644'
-end
-
-remote_file "Copy #{node['proxy']['ext_domain']} dhparams" do
-  path "/etc/ssl/private/dhparams-#{node['proxy']['ext_domain']}.pem"
-  source "file:///var/www/#{node['application']}/ssl/dhparams-#{node['proxy']['ext_domain']}.pem"
-  owner 'root'
-  group 'root'
-  mode '0644'
-end
-
-ssl_certificate node['proxy']['ext_domain'] do
-  common_name node['proxy']['ext_domain']
-  source 'file'
-  key_path "/etc/ssl/private/#{node['proxy']['ext_domain']}.key"
-  cert_path "/etc/ssl/certs/#{node['proxy']['ext_domain']}.crt"
-end
-
-cert = ssl_certificate node['proxy']['ext_domain']
-
-template 'ssl.conf' do
-  path   "#{node['openresty']['dir']}/conf.d/ssl.conf"
-  source 'ssl.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  cookbook 'proxy'
-  variables(
-    ssl_key: cert.key_path,
-    ssl_cert: cert.cert_path,
-    ssl_dhparam: "/etc/ssl/private/dhparams-#{node['proxy']['ext_domain']}.pem",
-    resolver: node['proxy']['resolver']
-  )
-  notifies :reload, 'service[nginx]'
-end
-
 # configure proxy cache
 template 'proxy_cache.conf' do
   path   "#{node['openresty']['dir']}/conf.d/proxy_cache.conf"

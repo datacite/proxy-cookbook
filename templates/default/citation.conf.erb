@@ -32,7 +32,7 @@ server {
 server {
     server_name citation.datacite.org citation.test.datacite.org;
     listen 80;
-    listen 443 ssl;
+    listen 8000;
     set $backend http://<%= @backend %>;
 
     # /basic_status

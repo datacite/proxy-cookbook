@@ -9,7 +9,7 @@ server {
 
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
-    listen 443 ssl;
+    listen 8000;
     set $backend http://<%= @backend %>;
 
     # block pingdom
@@ -157,6 +157,16 @@ server {
         <%= @test_string %>
     }
     location /sitemaps {
+        proxy_pass http://search-boa.ec2.datacite.org;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        include /etc/nginx/proxy;
+    }
         proxy_pass <%= @subdomain %>-boa.<%= @domain %>;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

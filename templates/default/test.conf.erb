@@ -1,7 +1,10 @@
 server {
     server_name test.datacite.org;
     listen 80;
-    listen 443 ssl;
+
+server {
+    server_name test.datacite.org;
+    listen 8000;
     set $backend http://<%= @backend %>;
 
     # /basic_status

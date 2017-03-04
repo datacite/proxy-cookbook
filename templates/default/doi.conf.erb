@@ -10,7 +10,7 @@ server {
 
 server {
     server_name doi.datacite.org datacite.org;
-    listen 443;
+    listen 8000;
 
     location / {
         return 301 https://<%= @backend %>;
