@@ -91,6 +91,7 @@ template "#{node['openresty']['dir']}/sites-enabled/proxy.conf" do
   mode '0644'
   cookbook 'proxy'
   variables(
+    resolver: node['proxy']['resolver'],
     hostname: node['application'],
     domain: node['proxy']['ext_domain']
   )
@@ -145,6 +146,7 @@ template "#{node['openresty']['dir']}/#{dir}/#{node['proxy']['ext_domain']}.conf
   mode '0644'
   cookbook 'proxy'
   variables(
+    resolver: node['proxy']['resolver'],
     domain: node['proxy']['ext_domain'],
     regex_domain: node['proxy']['ext_domain'].gsub(/\./, "\."),
     int_domain: node['proxy']['int_domain'],
@@ -164,6 +166,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
@@ -180,6 +183,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
@@ -195,6 +199,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         frontend: subdomain['backend'],
@@ -211,6 +216,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend']
@@ -225,6 +231,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend']
@@ -239,6 +246,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         backend: subdomain['backend'],
         test_string: test_string
       )
@@ -252,6 +260,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],
@@ -267,6 +276,7 @@ node['proxy']['subdomains'].each do |subdomain|
       mode '0644'
       cookbook 'proxy'
       variables(
+        resolver: node['proxy']['resolver'],
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         backend: subdomain['backend'],

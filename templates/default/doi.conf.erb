@@ -2,6 +2,7 @@
 server {
     server_name doi.datacite.org datacite.org;
     listen 80;
+    resolver <%= @resolver %>;
 
     location / {
         return 301 https://doi.datacite.org$request_uri;
@@ -11,6 +12,7 @@ server {
 server {
     server_name doi.datacite.org datacite.org;
     listen 8080;
+    resolver <%= @resolver %>;
 
     location / {
         return 301 https://<%= @backend %>;

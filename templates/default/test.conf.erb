@@ -1,10 +1,7 @@
 server {
     server_name test.datacite.org;
-    listen 80;
-
-server {
-    server_name test.datacite.org;
     listen 8080;
+    resolver <%= @resolver %>;
     set $backend http://<%= @backend %>;
 
     # /basic_status

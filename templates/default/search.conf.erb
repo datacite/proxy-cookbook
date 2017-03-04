@@ -1,6 +1,7 @@
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
+    resolver <%= @resolver %>;
 
     location / {
         return 301 https://<%= @subdomain %>.<%= @domain %>$request_uri;
@@ -10,6 +11,7 @@ server {
 server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 8080;
+    resolver <%= @resolver %>;
     set $backend http://<%= @backend %>;
 
     # block pingdom

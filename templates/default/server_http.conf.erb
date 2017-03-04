@@ -3,6 +3,7 @@ server {
     server_name <%= @subdomain %>.<%= @domain %>;
     listen 80;
     listen 8080;
+    resolver <%= @resolver %>;
     set $backend http://<%= @backend %>;
 
     # /basic_status
