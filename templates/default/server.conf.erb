@@ -1,6 +1,6 @@
 server {
     server_name ~^(?<subdomain>.+)<%= "\.#{@regex_domain}" %>$;
-    listen 80;
+    listen 8080;
     resolver <%= @resolver %>;
     set $backend http://$subdomain.<%= @int_domain %>;
 
