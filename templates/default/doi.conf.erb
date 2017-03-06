@@ -1,6 +1,6 @@
 # redirect all requests to doi proxy
 server {
-    server_name doi.datacite.org datacite.org;
+    server_name doi.datacite.org;
     listen 80;
     resolver <%= @resolver %>;
 
@@ -10,7 +10,7 @@ server {
 }
 
 server {
-    server_name doi.datacite.org datacite.org;
+    server_name doi.datacite.org;
     listen 8080;
     resolver <%= @resolver %>;
 

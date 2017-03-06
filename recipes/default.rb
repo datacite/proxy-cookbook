@@ -238,6 +238,22 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
+  elsif subdomain['subdomain'] == "www"
+    template "#{node['openresty']['dir']}/#{dir}/www.conf" do
+      source "www.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        resolver: node['proxy']['resolver'],
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        backend: subdomain['backend'],
+        test_string: test_string
+      )
+      notifies :reload, 'service[nginx]'
+    end
   elsif subdomain['subdomain'].match('citation')
     template "#{node['openresty']['dir']}/#{dir}/citation.conf" do
       source "citation.conf.erb"
