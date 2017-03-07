@@ -18,5 +18,5 @@ default["application"] = "proxy"
 
 default['proxy']['resolver'] = '10.0.0.2'
 default['proxy']['ext_domain'] = 'datacite.local'
-default['proxy']['int_domain'] = 'ec2.datacite.local'
+default['proxy']['int_domain'] = 'datacite.local'
 default['proxy']['subdomains'] = []
