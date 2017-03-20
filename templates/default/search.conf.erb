@@ -170,7 +170,7 @@ server {
         include /etc/nginx/proxy;
     }
     location /sitemaps {
-        proxy_pass http://search-boa.datacite.org;
+        proxy_pass http://search.datacite.org.s3-website-eu-west-1.amazonaws.com;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
