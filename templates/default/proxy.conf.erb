@@ -5,7 +5,7 @@ server {
     resolver <%= @resolver %>;
 
     location / {
-        return 301 https://$subdomain.<%= @domain %>$request_uri;
+        return 301 https://$host$request_uri;
     }
 }
 
