@@ -15,8 +15,12 @@ server {
     set $frontend http://<%= @frontend %>;
     set $backend http://<%= @backend %>;
 
-    # /basic_status
-    include /etc/nginx/conf.d/nginx_status.conf.inc;
+    location /basic_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
 
     location = / {
         proxy_pass $frontend;

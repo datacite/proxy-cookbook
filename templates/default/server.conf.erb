@@ -4,8 +4,12 @@ server {
     resolver <%= @resolver %>;
     set $backend http://$subdomain.<%= @int_domain %>;
 
-    # /basic_status
-    include /etc/nginx/conf.d/nginx_status.conf.inc;
+    location /basic_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+    }
 
     location / {
         proxy_pass $backend;
