@@ -23,7 +23,7 @@ server {
     }
 
     location /content-resolver {
-        return 301 ^/content-resolver(/.*)$ $1 last;
+        rewrite ^/content-resolver(.*)$ $1 permanent;
     }
 
     location = / {
