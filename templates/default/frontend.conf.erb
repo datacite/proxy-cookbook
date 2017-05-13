@@ -22,6 +22,10 @@ server {
         deny all;
     }
 
+    location /content-resolver {
+        return 301 ^/content-resolver(/.*)$ $1 last;
+    }
+
     location = / {
         proxy_pass $frontend;
         proxy_set_header Host $host;
