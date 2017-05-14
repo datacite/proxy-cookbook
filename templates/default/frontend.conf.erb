@@ -23,7 +23,8 @@ server {
     }
 
     location /content-resolver {
-        rewrite ^/content-resolver/(.*)$ https://$server_name/$1 permanent;
+        port_in_redirect off;
+        rewrite ^/content-resolver(.*)$ $1 permanent;
     }
 
     location = / {
