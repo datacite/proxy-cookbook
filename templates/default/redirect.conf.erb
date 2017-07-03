@@ -1,0 +1,11 @@
+# redirect all http and https traffic
+server {
+    server_name ~^(?<subdomain>.+)<%= "\.#{@domain}" %>$;
+    listen 80;
+    listen 8080;
+    resolver <%= @resolver %>;
+
+    location / {
+        return 301 https://<%= @backend %>$request_uri;
+    }
+}
