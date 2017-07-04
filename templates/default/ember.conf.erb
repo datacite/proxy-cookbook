@@ -23,14 +23,14 @@ server {
     }
 
     location = / {
-        try_files $uri $frontend/index.html;
+        try_files $uri /index.html;
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
         <%= @test_string %>
     }
 
     location /status {
-        try_files $uri $frontend/index.html;
+        try_files $uri /index.html;
         include /etc/nginx/proxy;
         include /etc/nginx/cors;
         <%= @test_string %>
