@@ -227,7 +227,7 @@ node['proxy']['subdomains'].each do |subdomain|
     end
   elsif ["schnitzel"].include? subdomain['subdomain']
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
-      source "eventdata.conf.erb"
+      source "ember.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
