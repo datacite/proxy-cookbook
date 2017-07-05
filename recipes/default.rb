@@ -208,9 +208,26 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif ["eventdata"].include? subdomain['subdomain']
+  elsif subdomain['subdomain'] == "eventdata"
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
-      source "ember.conf.erb"
+      source "eventdata.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        resolver: node['proxy']['resolver'],
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        frontend: subdomain['backend'],
+        backend: subdomain['search_backend'],
+        test_string: test_string
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  elsif ["schnitzel"].include? subdomain['subdomain']
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+      source "eventdata.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
