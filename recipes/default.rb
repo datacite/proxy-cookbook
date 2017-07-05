@@ -237,7 +237,6 @@ node['proxy']['subdomains'].each do |subdomain|
         subdomain: subdomain['subdomain'],
         domain: node['proxy']['ext_domain'],
         frontend: subdomain['backend'],
-        backend: subdomain['search_backend'],
         test_string: test_string
       )
       notifies :reload, 'service[nginx]'
