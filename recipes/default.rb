@@ -287,18 +287,18 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'] == "support"
-    template "#{node['openresty']['dir']}/#{dir}/support.conf" do
-      source "redirect.conf.erb"
+  elsif ["crosscite", "pidapalooza"].include? subdomain['subdomain']
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+      source "#{subdomain['subdomain']}.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'
       cookbook 'proxy'
       variables(
         resolver: node['proxy']['resolver'],
-        subdomain: subdomain['subdomain'],
-        domain: node['proxy']['ext_domain'],
+        domain: "#{subdomain['subdomain']}.org",
         backend: subdomain['backend'],
+        test_string: test_string
       )
       notifies :reload, 'service[nginx]'
     end
