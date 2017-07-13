@@ -287,7 +287,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif ["crosscite", "pidapalooza"].include? subdomain['subdomain']
+  elsif ["pidapalooza"].include? subdomain['subdomain']
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "#{subdomain['subdomain']}.conf.erb"
       owner 'root'

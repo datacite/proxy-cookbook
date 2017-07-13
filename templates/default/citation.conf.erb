@@ -1,7 +1,17 @@
 # allow traffic via http
 server {
-    server_name citation.crosscite.org citation.test.crosscite.org;
+    server_name citation.crosscite.org citation.test.crosscite.org www.crosscite.org crosscite.org;
     listen 80;
+    resolver 10.0.0.2;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    server_name citation.crosscite.org citation.test.crosscite.org www.crosscite.org crosscite.org;
+    listen 8080;
     resolver <%= @resolver %>;
     set $backend http://<%= @backend %>;
 
@@ -10,7 +20,7 @@ server {
     }
 
     location /cn {
-        return 301 http://citation.crosscite.org/docs.html;
+        return 301 https://citation.crosscite.org/docs.html;
     }
 
     location /basic_status {
