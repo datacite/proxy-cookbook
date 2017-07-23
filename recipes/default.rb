@@ -256,7 +256,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'] == "doi"
+  elsif subdomain['subdomain'] == "doi" && node['proxy']['ext_domain'] == "datacite.org"
     template "#{node['openresty']['dir']}/#{dir}/doi.conf" do
       source "doi.conf.erb"
       owner 'root'
