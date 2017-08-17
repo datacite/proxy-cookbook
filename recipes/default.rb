@@ -225,7 +225,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif ["schnitzel", "friedman"].include? subdomain['subdomain']
+  elsif ["doi", "friedman"].include? subdomain['subdomain']
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "ember.conf.erb"
       owner 'root'
@@ -256,9 +256,9 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif subdomain['subdomain'] == "doi" && node['proxy']['ext_domain'] == "datacite.org"
-    template "#{node['openresty']['dir']}/#{dir}/doi.conf" do
-      source "doi.conf.erb"
+  elsif subdomain['subdomain'] == "handle" && node['proxy']['ext_domain'] == "datacite.org"
+    template "#{node['openresty']['dir']}/#{dir}/handle.conf" do
+      source "handle.conf.erb"
       owner 'root'
       group 'root'
       mode '0644'

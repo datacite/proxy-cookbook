@@ -1,16 +1,16 @@
-# redirect all requests to doi proxy
+# redirect all requests to handle proxy
 server {
-    server_name doi.datacite.org;
+    server_name handle.datacite.org;
     listen 80;
     resolver <%= @resolver %>;
 
     location / {
-        return 301 https://doi.datacite.org$request_uri;
+        return 301 https://handle.datacite.org$request_uri;
     }
 }
 
 server {
-    server_name doi.datacite.org;
+    server_name handle.datacite.org;
     listen 8080;
     resolver <%= @resolver %>;
 
