@@ -13,16 +13,11 @@ server {
     listen 8080;
     resolver <%= @resolver %>;
     set $frontend http://<%= @frontend %>;
-
-    location /basic_status {
-        stub_status on;
-        access_log off;
-        allow 127.0.0.1;
-        deny all;
-    }
+    root /;
+    index index.html;
 
     location / {
-        try_files $uri /index.html;
+        try_files $uri $uri/ /index.html;
 
         proxy_pass $frontend;
         proxy_set_header Host $host;
