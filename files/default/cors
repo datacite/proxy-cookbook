@@ -1,6 +1,6 @@
 # enable CORS
 more_set_headers 'Access-Control-Allow-Origin: *';
-more_set_headers 'Access-Control-Allow-Methods: GET, POST, OPTIONS';
+more_set_headers 'Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS';
 
 if ($request_method = 'OPTIONS') {
     #
