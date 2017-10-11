@@ -191,7 +191,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif ["api", "oai"].include? subdomain['subdomain']
+  elsif ["api", "data", "oai"].include? subdomain['subdomain']
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "frontend.conf.erb"
       owner 'root'
