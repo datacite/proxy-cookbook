@@ -191,7 +191,24 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif ["api", "data", "oai"].include? subdomain['subdomain']
+  elsif subdomain['subdomain'] == "data"
+    template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
+      source "data.conf.erb"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      cookbook 'proxy'
+      variables(
+        resolver: node['proxy']['resolver'],
+        subdomain: subdomain['subdomain'],
+        domain: node['proxy']['ext_domain'],
+        frontend: subdomain['backend'],
+        backend: subdomain['search_backend'],
+        test_string: test_string
+      )
+      notifies :reload, 'service[nginx]'
+    end
+  elsif ["api", "oai"].include? subdomain['subdomain']
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "frontend.conf.erb"
       owner 'root'
