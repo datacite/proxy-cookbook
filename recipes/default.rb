@@ -242,7 +242,7 @@ node['proxy']['subdomains'].each do |subdomain|
       )
       notifies :reload, 'service[nginx]'
     end
-  elsif ["doi", "friedman"].include? subdomain['subdomain']
+  elsif ["doi", "sandbox", "friedman"].include? subdomain['subdomain']
     template "#{node['openresty']['dir']}/#{dir}/#{subdomain['subdomain']}.conf" do
       source "ember.conf.erb"
       owner 'root'
