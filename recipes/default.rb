@@ -16,14 +16,6 @@ node['ruby']['packages'].each do |pkg|
   end
 end
 
-# install collectd
-%w{ collectd }.each do |pkg|
-  package pkg do
-    options "-y --force-yes"
-    action :install
-  end
-end
-
 if ENV['RSYSLOG_HOST']
   node.override['openresty']['rsyslog_server']  = "#{ENV['RSYSLOG_HOST']}:#{ENV['RSYSLOG_PORT']}"
 end
