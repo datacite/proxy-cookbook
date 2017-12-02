@@ -1,18 +1,12 @@
 include_recipe "apt"
+
+include_recipe "librato"
+include_recipe "librato::nginx"
+
 include_recipe "openresty"
 
 execute "apt-get update" do
   action :run
-end
-
-# # add repo for librato-collectd
-apt_repository "librato-collectd" do
-  uri          "https://packagecloud.io/librato/librato-collectd/ubuntu/"
-  distribution node['lsb']['codename']
-  components   ["main"]
-  key          "https://packagecloud.io/gpg.key"
-  action       :add
-  notifies     :run, "execute[apt-get update]"
 end
 
 # install required libraries
@@ -373,7 +367,7 @@ capistrano node["application"] do
   user            ENV['DEPLOY_USER']
   group           ENV['DEPLOY_GROUP']
   rails_env       ENV['RAILS_ENV']
-  action          [:consul_install, :rsyslog_config, :restart]
+  action          [:rsyslog_config, :restart]
 end
 
 service 'nginx' do
