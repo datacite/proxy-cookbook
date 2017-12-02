@@ -42,24 +42,6 @@ template 'nginx.conf' do
   notifies :reload, 'service[nginx]'
 end
 
-# librato collectd configuration
-directory '/opt/collectd/etc/collectd.conf.d' do
-  owner 'root'
-  group 'root'
-  mode '0755'
-  recursive true
-  action :create
-end
-
-template 'librato.conf' do
-  path   "/opt/collectd/etc/collectd.conf.d/librato.conf"
-  source 'librato.conf.erb'
-  owner  'root'
-  group  'root'
-  mode   '0644'
-  cookbook 'proxy'
-end
-
 # configure proxy cache
 template 'proxy_cache.conf' do
   path   "#{node['openresty']['dir']}/conf.d/proxy_cache.conf"
