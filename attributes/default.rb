@@ -7,6 +7,7 @@ default['openresty']['status']['url'] = '/basic_status'
 
 default['openresty']['source']['version'] = '1.11.2.5'
 default['openresty']['source']['file_prefix'] = 'openresty'
+default['openresty']['source']['checksum'] = 'f8cc203e8c0fcd69676f65506a3417097fc445f57820aa8e92d7888d8ad657b9'
 default['openresty']['source']['name'] = "%{file_prefix}-%{version}"
 default['openresty']['source']['url'] = "https://openresty.org/download/%{name}.tar.gz"
 
